@@ -22,13 +22,13 @@ const form = reactive({
 })
 
 const fetchDeposits = async () => {
-  deposits.value = await $fetch('http://localhost:3001/deposits', {
+  deposits.value = await $fetch('https://tbs-vercel.vercel.app/deposits', {
     headers: { Authorization: `Bearer ${auth.token}` }
   })
 }
 
 const addDeposit = async () => {
-  await $fetch('http://localhost:3001/deposits', {
+  await $fetch('https://tbs-vercel.vercel.app/deposits', {
     method: 'POST',
     headers: { Authorization: `Bearer ${auth.token}` },
     body: { ...form, created_at: new Date().toISOString() }
@@ -43,7 +43,7 @@ const editDeposit = (deposit) => {
 }
 
 const updateDeposit = async () => {
-  await $fetch(`http://localhost:3001/deposits/${editing.value}`, {
+  await $fetch(`https://tbs-vercel.vercel.app/deposits/${editing.value}`, {
     method: 'PUT',
     headers: { Authorization: `Bearer ${auth.token}` },
     body: form
@@ -54,7 +54,7 @@ const updateDeposit = async () => {
 }
 
 const deleteDeposit = async (id) => {
-  await $fetch(`http://localhost:3001/deposits/${id}`, {
+  await $fetch(`https://tbs-vercel.vercel.app/deposits/${id}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${auth.token}` }
   })

@@ -14,15 +14,12 @@ const form = reactive({
 })
 
 const fetchMembers = async () => {
-  members.value = await $fetch('http://localhost:3001/members', {
-    headers: { Authorization: `Bearer ${auth.token}` }
-  })
+  members.value = await $fetch('https://tbs-vercel.vercel.app/members')
 }
 
 const addMember = async () => {
-  await $fetch('http://localhost:3001/members', {
+  await $fetch('https://tbs-vercel.vercel.app/members', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${auth.token}` },
     body: form
   })
   resetForm()
@@ -35,9 +32,8 @@ const editMember = (member) => {
 }
 
 const updateMember = async () => {
-  await $fetch(`http://localhost:3001/members/${editing.value}`, {
+  await $fetch(`https://tbs-vercel.vercel.app/members/${editing.value}`, {
     method: 'PUT',
-    headers: { Authorization: `Bearer ${auth.token}` },
     body: form
   })
   editing.value = null
@@ -46,9 +42,8 @@ const updateMember = async () => {
 }
 
 const deleteMember = async (id) => {
-  await $fetch(`http://localhost:3001/members/${id}`, {
-    method: 'DELETE',
-    headers: { Authorization: `Bearer ${auth.token}` }
+  await $fetch(`https://tbs-vercel.vercel.app/members/${id}`, {
+    method: 'DELETE'
   })
   await fetchMembers()
 }

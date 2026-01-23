@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia'
+import bcrypt from 'bcryptjs'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(null)
   const role = ref(null)
 
   const login = async (username, password) => {
-    const res = await $fetch('http://localhost:3001/login', {
-      method: 'POST',
-      body: { username, password }
-    })
-    token.value = res.token
-    role.value = res.role
+    const users = await $fetch('https://tbs-vercel.vercel.app/users')
+    const user = users.find(u => u.username === username)
+    if (!user) throw new Error('User not found')
+    if (!bcrypt.compareSync(password, user.password)) throw new Error('Invalid credentials')
+    token.value = 'authenticated'
+    role.value = user.role
   }
 
   const logout = () => {
@@ -19,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const isAuthenticated = computed(() => !!token.value)
-  const isAdmin = computed(() => role.value === 'admin')
+  const isAdmin = computed(() => role.value === 'accountant')
 
   return { token, role, login, logout, isAuthenticated, isAdmin }
 }, {
