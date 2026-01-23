@@ -1,3 +1,7 @@
+// This file is no longer needed as functionality has been moved to Nuxt API routes
+// Uncomment the code below if you need to run the standalone JSON server locally for development
+
+/*
 const jsonServer = require('json-server');
 const express = require('express');
 const bcrypt = require('bcryptjs');
@@ -16,13 +20,21 @@ const SECRET = 'committee_secret_key';
 
 // Login route
 server.post('/login', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, phone } = req.body;
   const users = router.db.get('users').value();
-  const user = users.find(u => u.username === username);
+  let user;
 
-  if (!user) return res.status(401).json({ message: 'User not found' });
-  if (!bcrypt.compareSync(password, user.password)) {
-    return res.status(401).json({ message: 'Invalid credentials' });
+  if (phone) {
+    // Phone-based login (no password required)
+    user = users.find(u => u.phone === phone);
+    if (!user) return res.status(401).json({ message: 'User not found' });
+  } else {
+    // Username/password login
+    user = users.find(u => u.username === username);
+    if (!user) return res.status(401).json({ message: 'User not found' });
+    if (!bcrypt.compareSync(password, user.password)) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
   }
 
   const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: '1h' });
@@ -52,5 +64,6 @@ server.use((req, res, next) => {
 
 server.use(router);
 server.listen(3001, () => {
-  console.log('JSON Server running on port 3001');
+  console.log('JSON Server running on port 3000');
 });
+*/

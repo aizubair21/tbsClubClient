@@ -1,18 +1,16 @@
 {
-  "members": [
-    {
-      "id": 1,
-      "code": "M001",
-      "name": "John Doe",
-      "approved": true
-    }
-  ],
   "users": [
     {
       "id": 1,
       "username": "accountant",
-      "password": "$2b$10$BMSVjZWnIN.FUJ3bdvfzcuUCHwzXmQipXPjQRinej8Y3m7HUwPZXm",
-      "role": "accountant"
+      "name": "Accountant",
+      "email": "",
+      "father_name": "",
+      "mother_name": "",
+      "nid": "",
+      "address": "",
+      "role": "accountant",
+      "phone": "01712345678"
     }
   ],
   "deposits": [

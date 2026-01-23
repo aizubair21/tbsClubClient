@@ -1,8 +1,11 @@
-# TODO: Redesign Index Page with Tailwind CSS
+# TODO: Integrate JSON Server into Nuxt for Vercel Deployment
 
-- [x] Add reactive ref for aside toggle in script setup
-- [x] Update template: Create header with hamburger button and app name on left, logout on right
-- [x] Update template: Add aside element for navigation (hidden on mobile, visible on desktop, toggleable)
-- [x] Update template: Add main content area that adjusts based on aside visibility
-- [x] Remove old scoped styles and replace with Tailwind classes
-- [x] Ensure responsive behavior and layout flexibility
+- [x] Add lowdb dependency to package.json
+- [x] Create server/api/login.post.js for authentication
+- [x] Create server/api/users.get.js for fetching users
+- [x] Create server/api/deposits.get.js for fetching deposits
+- [x] Create server/api/members.get.js for fetching members (if needed)
+- [x] Update stores/auth.js to use local /api/users endpoint
+- [x] Comment out server.js as functionality moves to API routes
+- [x] Test the app locally with new API routes (dev server started)
+- [x] Deploy to Vercel and verify functionality

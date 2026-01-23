@@ -3,18 +3,25 @@ import Particles from '@tsparticles/vue3'
 import { loadSlim } from '@tsparticles/slim'
 
 const auth = useAuthStore()
-const username = ref('')
-const password = ref('')
+const phone = ref('')
 const error = ref('')
-const showPassword = ref(false)
 
 const login = async () => {
   try {
-    await auth.login(username.value, password.value)
+    await auth.login(phone.value)
     await navigateTo('/')
   } catch (e) {
     console.log(e);
-    error.value = 'Invalid credentials'
+    error.value = e.message || 'Login failed'
+  }
+}
+
+const validatePhone = () => {
+  const phoneRegex = /^(017|013|018|019|014|015)\d{8}$/
+  if (!phoneRegex.test(phone.value)) {
+    error.value = 'Invalid phone number'
+  } else {
+    error.value = ''
   }
 }
 
@@ -97,24 +104,51 @@ const particlesOptions = {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-      <p class="text-2xl text-center font-bold font-sans mb-4"> তারকারাজী বিজনেস লগিন </p>
-      <!-- <h1 class="text-2xl font-bold text-center mb-4">Login</h1> -->
-      <form @submit.prevent="login" class="space-y-4">
-        <input v-model="username" type="text" placeholder="Username" required class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <div class="relative">
-          <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" required class="border border-gray-300 rounded-md px-3 py-2 w-full pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-            </svg>
-          </button>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 relative overflow-hidden">
+    <!-- <Particles
+      id="tsparticles"
+      :options="particlesOptions"
+      :particlesInit="particlesInit"
+      :particlesLoaded="particlesLoaded"
+      class="absolute inset-0"
+    /> -->
+    <div class="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-2xl p-10 w-full max-w-md relative z-10 transform hover:scale-105 transition-transform duration-300">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 shadow-lg">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
         </div>
-        <button type="submit" class="bg-blue-500 text-white rounded-md py-2 w-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Login</button>
+        <p class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-sans">তারকারাজী বিজনেস লগিন</p>
+      </div>
+      <form @submit.prevent="login" class="space-y-6">
+        <div class="relative">
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+          <div class="relative">
+            <input
+              id="phone"
+              v-model="phone"
+              type="tel"
+              placeholder="01712345678"
+              required
+              @input="validatePhone"
+              class="border-2 border-gray-300 rounded-xl px-4 py-3 pl-12 w-full focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200 text-lg"
+            />
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-3 w-full hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 text-lg font-semibold shadow-lg"
+        >
+          Login
+        </button>
       </form>
-      <p v-if="error" class="text-red-500 text-sm text-center mt-4">{{ error }}</p>
+      <p v-if="error" class="text-red-600 text-sm text-center mt-6 bg-red-50 p-3 rounded-lg border border-red-200">{{ error }}</p>
     </div>
   </div>
 </template>
