@@ -35,7 +35,7 @@ const props = defineProps({
 defineEmits(['click'])
 
 const buttonClasses = computed(() => {
-  const baseClasses = 'rounded-xl py-3 px-6 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 text-lg font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseClasses = 'rounded-xl py-3 px-6 flex items-center focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 text-lg font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed'
 
   const widthClass = props.fullWidth ? 'w-full' : ''
 

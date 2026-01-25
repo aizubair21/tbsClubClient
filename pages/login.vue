@@ -5,7 +5,9 @@ import { loadSlim } from '@tsparticles/slim'
 const auth = useAuthStore()
 const phone = ref('')
 const error = ref('')
-
+definePageMeta({
+  layout:false,  
+})
 const login = async () => {
   try {
     await auth.login(phone.value)

@@ -58,30 +58,38 @@ onMounted(fetchMembers)
 </script>
 
 <template>
-  <div>
-    <h1>Members</h1>
-    <form @submit.prevent="editing ? updateMember() : addMember()">
-      <input v-model="form.code" placeholder="Code" required />
-      <input v-model="form.name" placeholder="Name" required />
-      <label><input v-model="form.approved" type="checkbox" /> Approved</label>
-      <button type="submit">{{ editing ? 'Update' : 'Add' }} Member</button>
-      <button v-if="editing" type="button" @click="editing = null; resetForm()">Cancel</button>
+  <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
+    <h1 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Members</h1>
+    <form @submit.prevent="editing ? updateMember() : addMember()" class="space-y-4 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input v-model="form.code" placeholder="Code" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.name" placeholder="Name" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+      </div>
+      <label class="flex items-center space-x-2">
+        <input v-model="form.approved" type="checkbox" class="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+        <span class="text-gray-700">Approved</span>
+      </label>
+      <div class="flex space-x-4">
+        <button type="submit" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-3 px-6 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg">
+          {{ editing ? 'Update' : 'Add' }} Member
+        </button>
+        <button v-if="editing" type="button" @click="editing = null; resetForm()" class="bg-gray-500 text-white rounded-xl py-3 px-6 hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg">
+          Cancel
+        </button>
+      </div>
     </form>
-    <ul>
-      <li v-for="member in members" :key="member.id">
-        {{ member.name }} ({{ member.code }}) - {{ member.approved ? 'Approved' : 'Pending' }}
-        <button @click="editMember(member)">Edit</button>
-        <button @click="deleteMember(member.id)">Delete</button>
+    <ul class="space-y-2">
+      <li v-for="member in members" :key="member.id" class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
+        <span class="text-gray-800">{{ member.name }} ({{ member.code }}) - {{ member.approved ? 'Approved' : 'Pending' }}</span>
+        <div class="flex space-x-2">
+          <button @click="editMember(member)" class="bg-blue-500 text-white rounded-lg py-2 px-4 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transform hover:scale-105 transition-all duration-200 shadow-lg">
+            Edit
+          </button>
+          <button @click="deleteMember(member.id)" class="bg-red-500 text-white rounded-lg py-2 px-4 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transform hover:scale-105 transition-all duration-200 shadow-lg">
+            Delete
+          </button>
+        </div>
       </li>
     </ul>
   </div>
 </template>
-
-<style scoped>
-form {
-  margin-bottom: 20px;
-}
-input {
-  margin-right: 10px;
-}
-</style>

@@ -79,39 +79,43 @@ onMounted(fetchDeposits)
 </script>
 
 <template>
-  <div>
-    <h1>Deposits</h1>
-    <form @submit.prevent="editing ? updateDeposit() : addDeposit()">
-      <input v-model="form.member_code" placeholder="Member Code" required />
-      <input v-model.number="form.amount" placeholder="Amount" required />
-      <input v-model="form.type" placeholder="Type" required />
-      <input v-model="form.session" placeholder="Session" required />
-      <input v-model="form.month" placeholder="Month" required />
-      <input v-model="form.method" placeholder="Method" required />
-      <input v-model="form.pay_to" placeholder="Pay To" required />
-      <input v-model="form.send_number" placeholder="Send Number" />
-      <input v-model="form.receive_number" placeholder="Receive Number" />
-      <input v-model="form.date" type="date" required />
-      <input v-model="form.trx_id" placeholder="Transaction ID" />
-      <button type="submit">{{ editing ? 'Update' : 'Add' }} Deposit</button>
-      <button v-if="editing" type="button" @click="editing = null; resetForm()">Cancel</button>
+  <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
+    <h1 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Deposits</h1>
+    <form @submit.prevent="editing ? updateDeposit() : addDeposit()" class="space-y-4 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <input v-model="form.member_code" placeholder="Member Code" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model.number="form.amount" placeholder="Amount" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.type" placeholder="Type" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.session" placeholder="Session" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.month" placeholder="Month" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.method" placeholder="Method" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.pay_to" placeholder="Pay To" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.send_number" placeholder="Send Number" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.receive_number" placeholder="Receive Number" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.date" type="date" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <input v-model="form.trx_id" placeholder="Transaction ID" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+      </div>
+      <div class="flex space-x-4">
+        <button type="submit" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-3 px-6 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg">
+          {{ editing ? 'Update' : 'Add' }} Deposit
+        </button>
+        <button v-if="editing" type="button" @click="editing = null; resetForm()" class="bg-gray-500 text-white rounded-xl py-3 px-6 hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg">
+          Cancel
+        </button>
+      </div>
     </form>
-    <ul>
-      <li v-for="deposit in deposits" :key="deposit.id">
-        {{ deposit.member_code }} - {{ deposit.amount }} ({{ deposit.type }}) - {{ deposit.date }}
-        <button @click="editDeposit(deposit)">Edit</button>
-        <button @click="deleteDeposit(deposit.id)">Delete</button>
+    <ul class="space-y-2">
+      <li v-for="deposit in deposits" :key="deposit.id" class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
+        <span class="text-gray-800">{{ deposit.member_code }} - {{ deposit.amount }} ({{ deposit.type }}) - {{ deposit.date }}</span>
+        <div class="flex space-x-2">
+          <button @click="editDeposit(deposit)" class="bg-blue-500 text-white rounded-lg py-2 px-4 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transform hover:scale-105 transition-all duration-200 shadow-lg">
+            Edit
+          </button>
+          <button @click="deleteDeposit(deposit.id)" class="bg-red-500 text-white rounded-lg py-2 px-4 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transform hover:scale-105 transition-all duration-200 shadow-lg">
+            Delete
+          </button>
+        </div>
       </li>
     </ul>
   </div>
 </template>
-
-<style scoped>
-form {
-  margin-bottom: 20px;
-}
-input {
-  margin-right: 10px;
-  margin-bottom: 5px;
-}
-</style>
