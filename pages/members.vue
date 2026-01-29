@@ -7,6 +7,7 @@ if (!auth.isAuthenticated) {
 
 const members = ref([])
 const editing = ref(null)
+const showForm = ref(false)
 const form = reactive({
   code: '',
   name: '',
@@ -14,35 +15,43 @@ const form = reactive({
 })
 
 const fetchMembers = async () => {
-  members.value = await $fetch('https://tbs-vercel.vercel.app/members')
+  const { data } = await useLazyFetch('/api/members', 
+    {
+      method: 'GET',
+    }
+  )
+  members.value = data.value || []
 }
 
 const addMember = async () => {
-  await $fetch('https://tbs-vercel.vercel.app/members', {
+  await $fetch('/api/members', {
     method: 'POST',
     body: form
   })
+  showForm.value = false
   resetForm()
   await fetchMembers()
 }
 
 const editMember = (member) => {
   editing.value = member.id
+  showForm.value = true
   Object.assign(form, member)
 }
 
 const updateMember = async () => {
-  await $fetch(`https://tbs-vercel.vercel.app/members/${editing.value}`, {
+  await $fetch(`/api/members/${editing.value}`, {
     method: 'PUT',
     body: form
   })
   editing.value = null
+  showForm.value = false
   resetForm()
   await fetchMembers()
 }
 
 const deleteMember = async (id) => {
-  await $fetch(`https://tbs-vercel.vercel.app/members/${id}`, {
+  await $fetch(`/api/members/${id}`, {
     method: 'DELETE'
   })
   await fetchMembers()
@@ -60,7 +69,10 @@ onMounted(fetchMembers)
 <template>
   <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
     <h1 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Members</h1>
-    <form @submit.prevent="editing ? updateMember() : addMember()" class="space-y-4 mb-6">
+    <button v-if="!showForm" @click="showForm = true" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-3 px-6 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg mb-6">
+      Add Member
+    </button>    
+    <form v-if="showForm" @submit.prevent="editing ? updateMember() : addMember()" class="space-y-4 mb-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input v-model="form.code" placeholder="Code" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
         <input v-model="form.name" placeholder="Name" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
