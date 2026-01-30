@@ -21,16 +21,16 @@ const form = reactive({
 })
 
 const fetchMember = async () => {
-  const member = await $fetch(`/api/members/${id}`)
+  const member = await $fetch(`/api/users/${id}`)
   Object.assign(form, member)
 }
 
 const updateMember = async () => {
-  await $fetch(`/api/members/${id}`, {
+  await $fetch(`/api/users/${id}`, {
     method: 'PUT',
     body: form
   })
-  await navigateTo('/members')
+  await navigateTo('/users')
 }
 
 onMounted(fetchMember)
@@ -55,7 +55,7 @@ onMounted(fetchMember)
         <button type="submit" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-3 px-6 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg">
           Update User
         </button>
-        <NuxtLink to="/members" class="bg-gray-500 text-white rounded-xl py-3 px-6 hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg">
+        <NuxtLink to="/users" class="bg-gray-500 text-white rounded-xl py-3 px-6 hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg">
           Cancel
         </NuxtLink>
       </div>

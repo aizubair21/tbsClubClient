@@ -10,12 +10,12 @@ export default defineEventHandler(async (event) => {
   await db.read()
 
   // Ensure users array exists
-  if (!db.data.users) {
-    db.data.users = []
+  if (!db.data.members) {
+    db.data.members = []
   }
 
   // Generate new ID
-  const newId = db.data.users.length > 0 ? Math.max(...db.data.users.map(u => u.id)) + 1 : 1
+  const newId = db.data.members.length > 0 ? Math.max(...db.data.members.map(u => u.id)) + 1 : 1
 
   const newUser = {
     id: newId,
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     phone: body.phone
   }
 
-  db.data.users.push(newUser)
+  db.data.members.push(newUser)
   await db.write()
 
   return newUser

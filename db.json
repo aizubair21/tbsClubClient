@@ -1,18 +1,6 @@
 {
   "users": [
     {
-      "id": 1,
-      "username": "accountant",
-      "name": "Accountant",
-      "email": "",
-      "father_name": "",
-      "mother_name": "",
-      "nid": "",
-      "address": "",
-      "role": "accountant",
-      "phone": "01712345678"
-    },
-    {
       "id": 2,
       "username": "Zubair21",
       "name": "Zubair",
@@ -26,8 +14,8 @@
     },
     {
       "id": 3,
-      "username": "abc",
-      "name": "abc",
+      "username": "abcd",
+      "name": "abcd",
       "email": "",
       "father_name": "",
       "mother_name": "",
