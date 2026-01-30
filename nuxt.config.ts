@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts'],
+  css: ['@fortawesome/fontawesome-free/css/all.css'],
   googleFonts: {
     families: {
       'Hind+Siliguri': true,

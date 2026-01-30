@@ -9,23 +9,29 @@ export default defineEventHandler(async (event) => {
   const db = new Low(adapter, {})
   await db.read()
 
-  // Ensure members array exists
-  if (!db.data.members) {
-    db.data.members = []
+  // Ensure users array exists
+  if (!db.data.users) {
+    db.data.users = []
   }
 
   // Generate new ID
-  const newId = db.data.members.length > 0 ? Math.max(...db.data.members.map(m => m.id)) + 1 : 1
+  const newId = db.data.users.length > 0 ? Math.max(...db.data.users.map(u => u.id)) + 1 : 1
 
-  const newMember = {
+  const newUser = {
     id: newId,
-    code: body.code,
+    username: body.username,
     name: body.name,
-    approved: body.approved
+    email: body.email,
+    father_name: body.father_name,
+    mother_name: body.mother_name,
+    nid: body.nid,
+    address: body.address,
+    role: body.role,
+    phone: body.phone
   }
 
-  db.data.members.push(newMember)
+  db.data.users.push(newUser)
   await db.write()
 
-  return newMember
+  return newUser
 })

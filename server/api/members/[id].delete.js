@@ -9,14 +9,14 @@ export default defineEventHandler(async (event) => {
   const db = new Low(adapter, {})
   await db.read()
 
-  // Find and remove member
-  const memberIndex = db.data.members.findIndex(m => m.id === id)
-  if (memberIndex === -1) {
-    throw createError({ statusCode: 404, statusMessage: 'Member not found' })
+  // Find and remove user
+  const userIndex = db.data.users.findIndex(u => u.id === id)
+  if (userIndex === -1) {
+    throw createError({ statusCode: 404, statusMessage: 'User not found' })
   }
 
-  const deletedMember = db.data.members.splice(memberIndex, 1)[0]
+  const deletedUser = db.data.users.splice(userIndex, 1)[0]
   await db.write()
 
-  return deletedMember
+  return deletedUser
 })

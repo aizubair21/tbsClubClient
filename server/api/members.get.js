@@ -7,6 +7,6 @@ export default defineEventHandler(async (event) => {
   const db = new Low(adapter, {})
   await db.read()
 
-  const members = db.data.members || []
-  return members
+  const users = db.data.members || []
+  return users
 })

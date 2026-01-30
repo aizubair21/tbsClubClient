@@ -3,33 +3,24 @@ import { JSONFile } from 'lowdb/node'
 
 export default defineEventHandler(async (event) => {
   const id = parseInt(event.context.params.id)
-  const body = await readBody(event)
 
   // Initialize lowdb
   const adapter = new JSONFile('db.json')
   const db = new Low(adapter, {})
   await db.read()
 
-  // Find and update user
+  // Ensure users array exists
+  if (!db.data.users) {
+    db.data.users = []
+  }
+
   const userIndex = db.data.users.findIndex(u => u.id === id)
   if (userIndex === -1) {
     throw createError({ statusCode: 404, statusMessage: 'User not found' })
   }
 
-  db.data.users[userIndex] = {
-    ...db.data.users[userIndex],
-    username: body.username,
-    name: body.name,
-    email: body.email,
-    father_name: body.father_name,
-    mother_name: body.mother_name,
-    nid: body.nid,
-    address: body.address,
-    role: body.role,
-    phone: body.phone
-  }
-
+  db.data.users.splice(userIndex, 1)
   await db.write()
 
-  return db.data.users[userIndex]
+  return { message: 'User deleted successfully' }
 })

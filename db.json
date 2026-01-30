@@ -11,6 +11,30 @@
       "address": "",
       "role": "accountant",
       "phone": "01712345678"
+    },
+    {
+      "id": 2,
+      "username": "Zubair21",
+      "name": "Zubair",
+      "email": "amimulit21@gmail.com",
+      "father_name": "Akhtar",
+      "mother_name": "Taslima",
+      "nid": "09873290890",
+      "address": "Lordharding, lalmohan, bhola",
+      "role": "user",
+      "phone": "01985219171"
+    },
+    {
+      "id": 3,
+      "username": "abc",
+      "name": "abc",
+      "email": "",
+      "father_name": "",
+      "mother_name": "",
+      "nid": "",
+      "address": "",
+      "role": "",
+      "phone": ""
     }
   ],
   "deposits": [
@@ -29,6 +53,14 @@
       "trx_id": "TX123456",
       "created_at": "2026-01-17T07:48:00Z"
     }
+  ],
+  "members": [
+    {
+      "id": 1,
+      "phone": "",
+      "name": "Rayhan",
+      "role": "admin",
+      "approved": true
+    }
   ]
-
 }

@@ -104,18 +104,5 @@ onMounted(fetchDeposits)
         </button>
       </div>
     </form>
-    <ul class="space-y-2">
-      <li v-for="deposit in deposits" :key="deposit.id" class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
-        <span class="text-gray-800">{{ deposit.member_code }} - {{ deposit.amount }} ({{ deposit.type }}) - {{ deposit.date }}</span>
-        <div class="flex space-x-2">
-          <button @click="editDeposit(deposit)" class="bg-blue-500 text-white rounded-lg py-2 px-4 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transform hover:scale-105 transition-all duration-200 shadow-lg">
-            Edit
-          </button>
-          <button @click="deleteDeposit(deposit.id)" class="bg-red-500 text-white rounded-lg py-2 px-4 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transform hover:scale-105 transition-all duration-200 shadow-lg">
-            Delete
-          </button>
-        </div>
-      </li>
-    </ul>
   </div>
 </template>

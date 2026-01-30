@@ -15,24 +15,37 @@ const totalUser = computed(() => users.value?.length || 0)
 </script>
 
 <template>
+   <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> ড্যাশবোর্ড </h1>
+  </div>
   <h1 class="pb-4">
-    ড্যাশবোর্ড
+    ওভারভিউ
   </h1>
-
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
       <h2 class="text-sm font-medium text-gray-600"> মোট আমানত </h2>
-      <p class="text-2xl font-bold text-gray-900">{{ totalDeposit }}</p>
+      <p class="text-2xl font-bold text-gray-900">{{ totalDeposit }} ৳</p>
     </div>
-    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-      <h2 class="text-sm font-medium text-gray-600"> সদস্য </h2>
-      <p class="text-2xl font-bold text-gray-900">{{ totalMember }}</p>
+    <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+      <h2 class="text-sm font-medium text-gray-600"> পরিচালক </h2>
+      <p class="text-2xl font-bold text-gray-900">{{ totalMember }} জন</p>
     </div>
-    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
       <h2 class="text-sm font-medium text-gray-600"> ব্যবহারকারী </h2>
-      <p class="text-2xl font-bold text-gray-900">{{ totalUser }}</p>
+      <p class="text-2xl font-bold text-gray-900">{{ totalUser }} জন</p>
     </div>
   </div>
+
+  <hr class="my-5" />
+ <h1 class="pb-4">
+    সর্বশেষ আমানত
+  </h1>
+
+  <hr class="my-5" />
+ <h1 class="pb-4">
+    সর্বশেষ ব্যবহারকারী
+  </h1>
+
 </template>
 
 

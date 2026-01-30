@@ -1,5 +1,5 @@
-# TODO for Updating Index Page
+# TODO: Add FontAwesome 5 to Nuxt Project
 
-- [ ] Add data fetching for deposits, members, and users in pages/index.vue script setup
-- [ ] Compute totals: sum of deposit amounts, count of members, count of users
-- [ ] Update template in pages/index.vue to display three cards with totals, using solid card boxes, thin titles, and larger content text
+- [x] Install @fortawesome/fontawesome-free package using npm
+- [x] Update nuxt.config.ts to include FontAwesome CSS in css array
+- [x] Verify package installation in package.json
