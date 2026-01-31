@@ -9,7 +9,7 @@
       "mother_name": "Taslima",
       "nid": "09873290890",
       "address": "Lordharding, lalmohan, bhola",
-      "role": "user",
+      "role": "admin",
       "phone": "01985219171"
     },
     {
@@ -45,7 +45,7 @@
   "members": [
     {
       "id": 1,
-      "phone": "",
+      "phone": "01985219171",
       "name": "Rayhan",
       "role": "admin",
       "approved": true
