@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(null)
   const role = ref(null)
+  const userId = ref(null)
 
   const login = async (phone) => {
     // Validate phone number
@@ -17,17 +18,19 @@ export const useAuthStore = defineStore('auth', () => {
     if (!user) throw new Error('User not found')
     token.value = 'authenticated'
     role.value = user.role
+    userId.value = user.id
   }
 
   const logout = () => {
     token.value = null
     role.value = null
+    userId.value = null
   }
 
   const isAuthenticated = computed(() => !!token.value)
-  const isAdmin = computed(() => role.value === 'accountant')
+  const isAdmin = computed(() => role.value === 'admin')
 
-  return { token, role, login, logout, isAuthenticated, isAdmin }
+  return { token, role, userId, login, logout, isAuthenticated, isAdmin }
 }, {
   persist: true
 })

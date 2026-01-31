@@ -26,15 +26,23 @@ export default defineEventHandler(async (event) => {
 
   const users = db.data.users || []
   const user = users.find(u => u.id === userId)
-  if (!user) {
-    throw createError({ statusCode: 401, statusMessage: 'User not found' })
+  if (!user || user.role !== 'admin') {
+    throw createError({ statusCode: 403, statusMessage: 'Forbidden: Admin access required' })
+  }
+
+  const id = parseInt(event.context.params.id)
+  if (!id) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid deposit ID' })
   }
 
   const deposits = db.data.deposits || []
-
-  if (user.role === 'admin') {
-    return deposits
-  } else {
-    return deposits.filter(d => d.member_code === userId)
+  const depositIndex = deposits.findIndex(d => d.id === id)
+  if (depositIndex === -1) {
+    throw createError({ statusCode: 404, statusMessage: 'Deposit not found' })
   }
+
+  deposits.splice(depositIndex, 1)
+  await db.write()
+
+  return { message: 'Deposit deleted successfully' }
 })

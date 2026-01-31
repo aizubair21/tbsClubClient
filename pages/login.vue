@@ -151,6 +151,9 @@ const particlesOptions = {
         </button>
       </form>
       <p v-if="error" class="text-red-600 text-sm text-center mt-6 bg-red-50 p-3 rounded-lg border border-red-200">{{ error }}</p>
+      <div class="text-center mt-6">
+        <p class="text-gray-600">Don't have an account? <NuxtLink to="/register" class="text-purple-600 hover:text-purple-800 font-semibold">Register here</NuxtLink></p>
+      </div>
     </div>
   </div>
 </template>

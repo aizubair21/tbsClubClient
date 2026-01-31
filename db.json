@@ -9,26 +9,27 @@
       "mother_name": "Taslima",
       "nid": "09873290890",
       "address": "Lordharding, lalmohan, bhola",
-      "role": "user",
+      "role": "admin",
       "phone": "01985219171"
     },
     {
       "id": 3,
-      "username": "abcd",
-      "name": "abcd",
-      "email": "",
-      "father_name": "",
-      "mother_name": "",
-      "nid": "",
-      "address": "",
-      "role": "",
-      "phone": ""
+      "username": "NeverMind",
+      "password": "$2b$10$6F20tsKro4aQ1yVCewvr2OHSNHt0ZXGIKzxjq2QIx977/qhtAllQC",
+      "role": "user",
+      "name": "Never Mind",
+      "email": "never@mind.com",
+      "father_name": "Abc",
+      "mother_name": "Def",
+      "nid": "2918271211",
+      "address": "Abcdef",
+      "phone": "01985219172"
     }
   ],
   "deposits": [
     {
       "id": 1,
-      "member_code": "M001",
+      "member_code": "3",
       "amount": 500,
       "type": "Monthly",
       "session": "2026",
@@ -45,7 +46,7 @@
   "members": [
     {
       "id": 1,
-      "phone": "",
+      "phone": "01985219171",
       "name": "Rayhan",
       "role": "admin",
       "approved": true
