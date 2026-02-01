@@ -79,7 +79,7 @@ onMounted(() => {
 <template>
   <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
     <h1 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">User Details</h1>
-    <table class="min-w-full table-auto bordered mb-6">
+    <table class=" bordered mb-6">
       <tbody>
         <tr>
           <td class="px-4 py-2 font-medium">Name</td>
@@ -114,7 +114,7 @@ onMounted(() => {
 
     <!-- Deposit Overview -->
     <h2 class="text-2xl font-bold mb-4 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">Deposit Overview</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <div class="grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
       <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl p-4 shadow-lg">
         <h3 class="text-lg font-semibold">Total Deposit</h3>
         <p class="text-2xl font-bold">{{ totalDeposit }}</p>
@@ -137,13 +137,16 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Deposit Lists -->
+
+  </div>
+
+  <div class="mt-6 ">
+        <!-- Deposit Lists -->
     <h2 class="text-2xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Deposit Lists</h2>
     <div class="mb-4 flex space-x-4">
       <input v-model="sessionFilter" placeholder="Filter by Session" class="border-2 border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
       <input v-model="monthFilter" placeholder="Filter by Month" class="border-2 border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
     </div>
-
     <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
       <div v-if="filteredDeposits.length === 0" class="text-center py-8">
         <p class="text-gray-500">No deposits found.</p>
