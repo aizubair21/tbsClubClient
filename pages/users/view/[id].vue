@@ -152,24 +152,16 @@ onMounted(() => {
         <table class="min-w-full table-auto bordered">
           <thead>
             <tr>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Infot</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <tr v-for="deposit in filteredDeposits" :key="deposit.id">
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.id }}</td>
+            <tr v-for="(deposit, index) in filteredDeposits" :key="deposit.id">
+              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{index}} - {{ deposit.id }}</td>
+              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{deposit.month}} {{ deposit.session }}, {{deposit.type}}</td>
               <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.amount }}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.type }}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.session }}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.month }}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.method }}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.date }}</td>
             </tr>
           </tbody>
         </table>
