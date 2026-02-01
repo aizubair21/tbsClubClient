@@ -140,7 +140,7 @@ onMounted(() => {
 
   </div>
 
-  <div class="mt-6 ">
+  <div class="mt-6 bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
         <!-- Deposit Lists -->
     <h2 class="text-2xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Deposit Lists</h2>
     <div class="mb-4 flex space-x-4">
