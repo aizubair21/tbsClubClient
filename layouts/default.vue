@@ -62,7 +62,7 @@ const logout = () => {
     </aside>
 
     <!-- Main content -->
-    <div class="">
+    <div class="flex flex-1 flex-col">
       <!-- Header -->
       <header class="border-b shadow p-4 flex justify-between items-center">
         <div class="flex items-center">
@@ -85,7 +85,7 @@ const logout = () => {
       </header>
 
       <!-- Main -->
-      <main class=" p-6 overflow-x-scroll">
+      <main class=" p-6 overflow-x-hidden">
         <!-- Additional content can go here -->
         <slot></slot>
       </main>
