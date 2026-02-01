@@ -1,12 +1,13 @@
-import { Low } from 'lowdb'
-import { JSONFile } from 'lowdb/node'
-
 export default defineEventHandler(async (event) => {
-  // Initialize lowdb
-  const adapter = new JSONFile('db.json')
-  const db = new Low(adapter, {})
-  await db.read()
+  const headers = getHeaders(event)
 
-  const users = db.data.members || []
-  return users
+  try {
+    const response = await $fetch('https://tbs-vercel.vercel.app/members', {
+      method: 'GET',
+      headers: headers
+    })
+    return response
+  } catch (error) {
+    throw createError({ statusCode: error.status || 500, statusMessage: error.message || 'Internal Server Error' })
+  }
 })

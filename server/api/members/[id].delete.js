@@ -1,22 +1,14 @@
-import { Low } from 'lowdb'
-import { JSONFile } from 'lowdb/node'
-
 export default defineEventHandler(async (event) => {
-  const id = parseInt(event.context.params.id)
+  const id = event.context.params.id
+  const headers = getHeaders(event)
 
-  // Initialize lowdb
-  const adapter = new JSONFile('db.json')
-  const db = new Low(adapter, {})
-  await db.read()
-
-  // Find and remove user
-  const userIndex = db.data.users.findIndex(u => u.id === id)
-  if (userIndex === -1) {
-    throw createError({ statusCode: 404, statusMessage: 'User not found' })
+  try {
+    const response = await $fetch(`https://tbs-vercel.vercel.app/members/${id}`, {
+      method: 'DELETE',
+      headers: headers
+    })
+    return response
+  } catch (error) {
+    throw createError({ statusCode: error.status || 500, statusMessage: error.message || 'Internal Server Error' })
   }
-
-  const deletedUser = db.data.users.splice(userIndex, 1)[0]
-  await db.write()
-
-  return deletedUser
 })

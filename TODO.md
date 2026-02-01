@@ -1,12 +1,17 @@
-# TODO: Update Deposits Functionality
+# TODO: Migrate to External API (https://tbs-vercel.vercel.app/)
 
-## Tasks to Complete
-
-- [x] Update `stores/auth.js` to store the user ID upon login.
-- [x] Modify `server/api/deposits.get.js` to authenticate requests, retrieve the user ID from headers, and filter deposits: admins see all, users see only their own (where `member_code` matches their user ID).
-- [x] Create `server/api/deposits.post.js` for adding deposits, restricted to admins.
-- [x] Create `server/api/deposits/[id].put.js` for updating deposits, restricted to admins.
-- [x] Create `server/api/deposits/[id].delete.js` for deleting deposits, restricted to admins.
-- [x] Update frontend fetches in `pages/deposits/index.vue` and `pages/deposits/add.vue` to use local `/api/deposits`.
-- [x] Update `pages/deposits/index.vue` to display the deposit list, with edit/delete buttons only for admins.
-- [x] Update `pages/deposits/add.vue` to handle adding deposits only (remove edit/delete logic from script, keep form).
+- [x] Update server/api/deposits.get.js to proxy to external /deposits
+- [x] Update server/api/deposits.post.js to proxy to external /deposits
+- [x] Update server/api/login.post.js to proxy to external /login
+- [x] Update server/api/members.get.js to proxy to external /members
+- [x] Update server/api/members.post.js to proxy to external /members
+- [x] Update server/api/users.get.js to proxy to external /users
+- [x] Update server/api/users.post.js to proxy to external /users
+- [x] Update server/api/deposits/[id].delete.js to proxy to external /deposits/{id}
+- [x] Update server/api/deposits/[id].put.js to proxy to external /deposits/{id}
+- [x] Update server/api/members/[id].delete.js to proxy to external /members/{id}
+- [x] Update server/api/members/[id].put.js to proxy to external /members/{id}
+- [x] Update server/api/users/[id].delete.js to proxy to external /users/{id}
+- [x] Update server/api/users/[id].get.js to proxy to external /users/{id}
+- [x] Update server/api/users/[id].put.js to proxy to external /users/{id}
+- [x] Test the application by running npm run dev and verifying functionality

@@ -1,25 +1,14 @@
-import { Low } from 'lowdb'
-import { JSONFile } from 'lowdb/node'
-
 export default defineEventHandler(async (event) => {
-  const id = parseInt(event.context.params.id)
+  const id = event.context.params.id
+  const headers = getHeaders(event)
 
-  // Initialize lowdb
-  const adapter = new JSONFile('db.json')
-  const db = new Low(adapter, {})
-  await db.read()
-
-  // Ensure users array exists
-  if (!db.data.users) {
-    db.data.users = []
+  try {
+    const response = await $fetch(`https://tbs-vercel.vercel.app/users/${id}`, {
+      method: 'GET',
+      headers: headers
+    })
+    return response
+  } catch (error) {
+    throw createError({ statusCode: error.status || 500, statusMessage: error.message || 'Internal Server Error' })
   }
-
-  const user = db.data.users.find(u => u.id === id)
-  if (!user) {
-    throw createError({ statusCode: 404, statusMessage: 'User not found' })
-  }
-
-  // Return user without password
-  const { password, ...userWithoutPassword } = user
-  return userWithoutPassword
 })
