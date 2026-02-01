@@ -1,4 +1,3 @@
-- [x] Add users ref and fetchUsers function in pages/deposits/add.vue
-- [x] Update onMounted to call fetchUsers
-- [x] Replace member_code input with select box in template
-- [ ] Test the form to ensure select works and submission sends correct id
+# TODO: Update users/view/[id].vue to add admin-only "Add Deposit" button
+
+- [ ] Add conditional "Add Deposit" button in the template of pages/users/view/[id].vue that is only visible if auth.isAdmin is true, using NuxtLink to navigate to /deposits/add
