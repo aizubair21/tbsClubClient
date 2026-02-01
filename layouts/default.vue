@@ -85,7 +85,7 @@ const logout = () => {
       </header>
 
       <!-- Main -->
-      <main class="flex-1 p-6">
+      <main class="flex-1 p-6 overflow-x-hidden">
         <!-- Additional content can go here -->
         <slot></slot>
       </main>

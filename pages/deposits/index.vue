@@ -81,9 +81,9 @@ onMounted(fetchDeposits)
       <p class="text-gray-500">No deposits found.</p>
     </div>
     <div v-else class="overflow-x-auto">
-      <table class="min-w-full table-auto">
+      <table class="min-w-full table-auto bordered">
         <thead>
-          <tr class="bg-gray-50">
+          <tr class="">
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member Code</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
@@ -96,7 +96,7 @@ onMounted(fetchDeposits)
             <th v-if="auth.isAdmin" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class=" divide-y divide-gray-200">
           <tr v-for="deposit in deposits" :key="deposit.id">
             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.id }}</td>
             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.member_code }}</td>

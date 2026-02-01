@@ -43,9 +43,9 @@ onMounted(fetchMembers)
           <!-- <button @click="deleteMember(member.id)" class="bg-red-500 text-white rounded-lg py-2 px-4 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transform hover:scale-105 transition-all duration-200 shadow-lg">
             <i class="fas fa-trash"></i>
           </button> -->
-           <NuxtLink  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl p-3 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg inline-block">
-      <i class="fas fa-angle-right"></i>
-    </NuxtLink>
+          <NuxtLink  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl p-3 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg inline-block">
+            <i class="fas fa-angle-right"></i>
+          </NuxtLink>
         </div>
       </div>
     </div>
