@@ -77,9 +77,10 @@ onMounted(() => {
 </script>
 
 <template>
+  
   <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
     <h1 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">User Details</h1>
-    <table class=" bordered mb-6">
+    <table class=" w-full bordered mb-6">
       <tbody>
         <tr>
           <td class="px-4 py-2 font-medium">Name</td>
@@ -101,31 +102,29 @@ onMounted(() => {
       </tbody>
     </table>
 
-
-
     <hr class="my-4" />
 
     <!-- Deposit Overview -->
    <!-- <h2 class="text-2xl font-bold mb-4 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">Deposit Overview</h2> -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl p-4 shadow-lg">
-        <h3 class="text-lg font-semibold">Total Deposit</h3>
+        <h3 class="text-md font-semibold">Total Deposit</h3>
         <p class="text-2xl font-bold">{{ totalDeposit }}</p>
       </div>
       <div class="bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-xl p-4 shadow-lg">
-        <h3 class="text-lg font-semibold">Total Months</h3>
+        <h3 class="text-md font-semibold">Total Months</h3>
         <p class="text-2xl font-bold">{{ totalMonths }}</p>
       </div>
       <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl p-4 shadow-lg">
-        <h3 class="text-lg font-semibold">Yearly Deposits</h3>
+        <h3 class="text-md font-semibold">Yearly Deposits</h3>
         <p class="text-2xl font-bold">{{ yearlyDeposits }}</p>
       </div>
       <div class="bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-xl p-4 shadow-lg">
-        <h3 class="text-lg font-semibold">Monthly Deposits</h3>
+        <h3 class="text-md font-semibold">Monthly Deposits</h3>
         <p class="text-2xl font-bold">{{ monthlyDeposits }}</p>
       </div>
       <div class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl p-4 shadow-lg">
-        <h3 class="text-lg font-semibold">Maintenance Deposits</h3>
+        <h3 class="text-md font-semibold">Maintenance Deposits</h3>
         <p class="text-2xl font-bold">{{ maintenanceDeposits }}</p>
       </div>
     </div>
@@ -135,26 +134,51 @@ onMounted(() => {
 
   <div class="mt-6 bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
     <!-- Deposit Lists -->
-    <div class="flex items-center justify-between">
-    <h2 class="text-2xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Deposit Lists</h2>
-   
-   <div v-if="auth.isAdmin" class="my-4">
-      <NuxtLink to="/deposits/add" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-3 px-6 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg inline-block">
-        Add Deposit
-      </NuxtLink>
-    </div>
+    <div class="flex items-center justify-between my-4">
+      <h2 class="text-2xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Deposits</h2>
+    
+      <div v-if="auth.isAdmin" class="">
+        <NuxtLink to="/deposits/add" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-3 px-6 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg inline-block">
+          Add
+        </NuxtLink>
+      </div>
     </div>
     
     <div class="mb-4 flex space-x-4">
-      <input v-model="sessionFilter" placeholder="Filter by Session" class="border-2 border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
-      <input v-model="monthFilter" placeholder="Filter by Month" class="border-2 border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+      <!-- <input v-model="sessionFilter" placeholder="Filter by Session" class="border-2 border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" /> -->
+       <select v-model="sessionFilter" required class="border-2 border-gray-300 rounded-xl px-3 py-1 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
+          <option value="">Select Session</option>
+          <option value="2024-25">2024-25</option>
+          <option value="2025-26">2025-26</option>
+          <option value="2026-27">2026-27</option>
+          <option value="2027-28">2027-28</option>
+          <option value="2028-29">2028-29</option>
+          <option value="2029-30">2029-30</option>
+        </select>
+      <!-- <input v-model="monthFilter" placeholder="Filter by Month" class="border-2 border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" /> -->
+      <select v-model="monthFilter" required class="border-2 border-gray-300 rounded-xl px-3 py-1 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
+          <option value="">Select Month</option>
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="May">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
+        </select>
     </div>
-    <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
+
+    <div class="">
       <div v-if="filteredDeposits.length === 0" class="text-center py-8">
         <p class="text-gray-500">No deposits found.</p>
       </div>
       <div v-else class="overflow-x-scroll">
-        <table class="table-auto bordered">
+        <table class="w-full table-auto bordered">
           <thead>
             <tr>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
@@ -163,7 +187,7 @@ onMounted(() => {
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <tr v-for="(deposit, index) in filteredDeposits" :key="deposit.id">
+            <tr v-for="(deposit, index) in filteredDeposits" :key="deposit.id" class="bg-white px-2 border-b">
               <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{index}} - {{ deposit.id }}</td>
               <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{deposit.month}} {{ deposit.session }}, {{deposit.type}}</td>
               <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.amount }}</td>
