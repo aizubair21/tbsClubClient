@@ -1,10 +1,11 @@
-// import { defineStore } from 'pinia'
+import { defineStore } from 'pinia'
 import bcrypt from 'bcryptjs'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(null)
   const role = ref(null)
   const userId = ref(null)
+  const userName = ref(null);
 
 
   const login = async (phone) => {
@@ -20,6 +21,7 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = 'authenticated'
     role.value = user.role
     userId.value = user.id
+    userName.value = user.name
   }
 
   const logout = () => {
@@ -31,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => role.value === 'admin')
 
-  return { token, role, userId, login, logout, isAuthenticated, isAdmin }
+  return { token, role, login, logout, isAuthenticated, isAdmin, userName }
 }, {
-  persist: true
+  persist: true,
 })

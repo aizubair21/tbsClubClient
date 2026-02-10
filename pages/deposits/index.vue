@@ -10,6 +10,7 @@ if (!auth.isAuthenticated) {
 
 const isModalOpen = ref(false)
 const openModalFor = ref('')
+const users = ref([]);
 
 const deposits = ref([])
 const editing = ref(null)
@@ -135,10 +136,18 @@ const resetForm = () => {
 
 const openModal = (key) => {
   openModalFor.value = key.target.textContent;
-  // console.log(filters[openModalFor.value]);
   isModalOpen.value = !isModalOpen.value;
 }
-onMounted(fetchDeposits)
+const fetchUsers = async () => {
+  let u = await $fetch('/api/users');
+  await u.forEach( item => users.value[item.id] = item.name)
+  console.log(users);
+  
+}
+onMounted(() => {
+  fetchDeposits(),
+  fetchUsers()
+})
 </script>
 
 <template>
@@ -246,7 +255,11 @@ onMounted(fetchDeposits)
               @change="toggleSelection(openModalFor, option)"
               class="w-5 h-5 mr-2"
             />
-            <label :for="`${openModalFor}-${option}`" class="text-sm">{{ option }}</label>
+            <label :for="`${openModalFor}-${option}`" class="text-sm"> 
+               
+                <div v-if="openModalFor == 'Member'">  {{ users[option] }} - ( {{ option }} ) </div>
+                <div v-else>{{ option }}</div>
+              </label>
           </div>
         </div>
       </div>

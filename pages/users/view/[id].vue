@@ -30,13 +30,14 @@ interface Deposit {
 }
 
 const auth = useAuthStore()
+const dt = useDataStore()
 const route = useRoute()
 const id = parseInt(route.params.id as string)
 
 if (!auth.isAuthenticated) {
   await navigateTo('/login')
 }
-
+const now = new Date();
 const user = ref<User>({} as User)
 const deposits = ref<Deposit[]>([])
 const sessionFilter = ref('')
@@ -82,6 +83,10 @@ onMounted(() => {
     <h1 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">User Details</h1>
     <table class=" w-full bordered mb-6">
       <tbody>
+        <tr>
+          <td class="px-4 py-2 font-medium">ID</td>
+          <td class="px-4 py-2">: {{ user.id }}</td>
+        </tr>
         <tr>
           <td class="px-4 py-2 font-medium">Name</td>
           <td class="px-4 py-2">: {{ user.name }}</td>
@@ -144,32 +149,18 @@ onMounted(() => {
       </div>
     </div>
     
+    <!-- filter  -->
     <div class="mb-4 flex space-x-4">
       <!-- <input v-model="sessionFilter" placeholder="Filter by Session" class="border-2 border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" /> -->
        <select v-model="sessionFilter" required class="border-2 border-gray-300 rounded-xl px-3 py-1 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Session</option>
-          <option value="2024-25">2024-25</option>
-          <option value="2025-26">2025-26</option>
-          <option value="2026-27">2026-27</option>
-          <option value="2027-28">2027-28</option>
-          <option value="2028-29">2028-29</option>
-          <option value="2029-30">2029-30</option>
+          <option v-for="session in dt.sessionArray" :value="session">{{session}}</option>
+         
         </select>
       <!-- <input v-model="monthFilter" placeholder="Filter by Month" class="border-2 border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" /> -->
       <select v-model="monthFilter" required class="border-2 border-gray-300 rounded-xl px-3 py-1 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Month</option>
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
-          <option value="April">April</option>
-          <option value="May">May</option>
-          <option value="June">June</option>
-          <option value="July">July</option>
-          <option value="August">August</option>
-          <option value="September">September</option>
-          <option value="October">October</option>
-          <option value="November">November</option>
-          <option value="December">December</option>
+          <option v-for="mn in dt.monthArray" :value="mn"> {{mn}} </option>
         </select>
     </div>
 
@@ -177,20 +168,25 @@ onMounted(() => {
       <div v-if="filteredDeposits.length === 0" class="text-center py-8">
         <p class="text-gray-500">No deposits found.</p>
       </div>
-      <div v-else class="overflow-x-scroll">
+      <div v-else class="overflow-x-scroll ">
         <table class="w-full table-auto bordered">
           <thead>
             <tr>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Infot</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th>
+
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
             <tr v-for="(deposit, index) in filteredDeposits" :key="deposit.id" class="bg-white px-2 border-b">
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{index}} - {{ deposit.id }}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{deposit.month}} {{ deposit.session }}, {{deposit.type}}</td>
+              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{index}}</td>
+              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{deposit.month}} {{ deposit.session }}, {{deposit.type}}  </td>
               <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.amount }}</td>
+              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"> <span class="px-2 rounded-xl shadow-xl bg-gray-300 "><i class="fas fa-angle-right"></i></span> </td>
+              
             </tr>
           </tbody>
         </table>
