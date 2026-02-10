@@ -116,7 +116,7 @@ const particlesOptions = {
       :particlesLoaded="particlesLoaded"
       class="absolute inset-0"
     /> -->
-    <div class="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-2xl p-10 w-full max-w-md relative z-10 transform hover:scale-105 transition-transform duration-300">
+    <div class="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-2xl p-10 w-full max-w-md relative z-10 transform transition-transform duration-300">
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 shadow-lg">
           <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

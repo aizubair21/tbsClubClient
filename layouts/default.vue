@@ -17,7 +17,7 @@ const logout = () => {
     <div v-if="isAsideOpen" @click="isAsideOpen = false" class="fixed inset-0 bg-opacity-50 z-40 md:hidden"></div>
 
     <!-- Aside -->
-    <aside class="w-64 bg-gray-800 lg:opacity-70 text-white fixed inset-y-0 left-0 z-5 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:block" :class="{ 'translate-x-0': isAsideOpen }">
+    <aside class="w-64 bg-gray-800 lg:opacity-70 text-white fixed inset-y-0 left-0 z-10 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:block" :class="{ 'translate-x-0': isAsideOpen }">
       <div class="p-4">
         <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 shadow-lg">

@@ -1,4 +1,6 @@
 <script setup>
+import Input from '~/components/Input.vue'
+
 const auth = useAuthStore()
 const data = useDataStore()
 
@@ -25,9 +27,71 @@ const form = reactive({
   trx_id: ''
 })
 
+const keyToField = {
+  Member: 'member_code',
+  Type: 'type',
+  Session: 'session',
+  Month: 'month',
+  Method: 'method'
+}
+
+const filters = reactive({
+  Member: { selected: [], search: '', options: [] },
+  Session: { selected: [], search: '', options: [] },
+  Month: { selected: [], search: '', options: [] },
+  Type: { selected: [], search: '', options: [] },
+  Method: { selected: [], search: '', options: [] }
+})
+
+
+
+const filteredDeposits = computed(() => {
+  return deposits.value.filter(deposit => {
+    return Object.keys(filters).every(key => {
+      const field = keyToField[key] || key.toLowerCase()
+      return filters[key].selected.includes(deposit[field])
+    })
+  })
+})
+
+const filteredOptions = computed(() => {
+  const result = {}
+  Object.keys(filters).forEach(key => {
+    result[key] = filters[key].options.filter(option =>
+      option.toLowerCase().includes(filters[key].search.toLowerCase())
+    )
+  })
+  return result
+})
+
+const toggleSelection = (key, value) => {
+  const index = filters[key].selected.indexOf(value)
+  if (index > -1) {
+    filters[key].selected.splice(index, 1)
+  } else {
+    filters[key].selected.push(value)
+  }
+}
+
+const selectAll = (key) => {
+  filters[key].selected = [...filters[key].options]
+}
+
+const clearAll = (key) => {
+  filters[key].selected = []
+}
+
 const fetchDeposits = async () => {
   deposits.value = await $fetch('/api/deposits', {
     headers: { Authorization: `Bearer ${auth.token}`, 'x-user-id': auth.userId }
+  })
+
+  // Populate filter options and select all by default
+  Object.keys(filters).forEach(key => {
+    const field = keyToField[key] || key.toLowerCase()
+    const uniqueValues = [...new Set(deposits.value.map(d => d[field]).filter(v => v !== null && v !== undefined && v !== ''))]
+    filters[key].options = uniqueValues
+    filters[key].selected = [...uniqueValues]
   })
 }
 
@@ -69,6 +133,11 @@ const resetForm = () => {
   form.trx_id = ''
 }
 
+const openModal = (key) => {
+  openModalFor.value = key.target.textContent;
+  // console.log(filters[openModalFor.value]);
+  isModalOpen.value = !isModalOpen.value;
+}
 onMounted(fetchDeposits)
 </script>
 
@@ -88,20 +157,20 @@ onMounted(fetchDeposits)
       <table class="min-w-full table-auto bordered">
         <thead>
           <tr class="">
-            <th @click="isModalOpen = !isModalOpen" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+            <th @click="openModal" class="cursor-pointer px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+            <th @click="openModal" class="cursor-pointer px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+            <th @click="openModal" class="cursor-pointer px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
+            <th @click="openModal" class="cursor-pointer px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
+            <th @click="openModal" class="cursor-pointer px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pay To</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
             <th v-if="auth.isAdmin" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody class=" divide-y divide-gray-200">
-          <tr v-for="deposit in deposits" :key="deposit.id">
+          <tr v-for="deposit in filteredDeposits" :key="deposit.id">
             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.id }}</td>
             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.member_code }}</td>
             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ deposit.amount }}</td>
@@ -157,24 +226,31 @@ onMounted(fetchDeposits)
 
 
   <Modal :isOpen="isModalOpen" @close="isModalOpen = false">
-    <Input type="search"  />
-    <div class="flex items-center justify-between">
-      <div>
-        0 Selected
-      </div>
-
-      <div class="flex items-center space-x-2">
-        <button>Select All</button>
-        <button class="ml-2">Clear</button>
-      </div>
-    </div>
-
-    <div class="mt-2">
-      <div class="flex items-center justify-start" >
-        <input type="checkbox" class="w-8 h-8 mr-3" />
+    <div class="max-h-96 overflow-y-auto">
+      <div v-if="openModalFor" :key="openModalFor">
+        <h4 class="text-lg font-semibold mb-2 capitalize"> {{ openModalFor }} </h4>
+        <Input v-model="filters[openModalFor].search" placeholder="Search..." class="mb-2" />
+        <div class="flex items-center justify-between mb-2">
+          <div>{{ filters[openModalFor].selected.length }} Selected</div>
+          <div class="flex items-center space-x-2">
+            <button @click="selectAll(openModalFor)" class="text-blue-600 hover:text-blue-800">Select All</button>
+            <button @click="clearAll(openModalFor)" class="text-red-600 hover:text-red-800">Clear</button>
+          </div>
+        </div>
+        <div class="space-y-1 max-h-40 overflow-y-auto">
+          <div v-for="option in filteredOptions[openModalFor]" :key="option" class="flex items-center">
+            <input
+              :id="`${openModalFor}-${option}`"
+              type="checkbox"
+              :checked="filters[openModalFor].selected.includes(option)"
+              @change="toggleSelection(openModalFor, option)"
+              class="w-5 h-5 mr-2"
+            />
+            <label :for="`${openModalFor}-${option}`" class="text-sm">{{ option }}</label>
+          </div>
+        </div>
       </div>
     </div>
   </Modal>
-
 
 </template>
