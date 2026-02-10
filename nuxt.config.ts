@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   modules: [
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts'],
   css: ['@fortawesome/fontawesome-free/css/all.css'],
@@ -23,7 +24,5 @@ export default defineNuxtConfig({
     },
   },
   devtools: { enabled: true },
-  build: {
-    transpile: ['@tsparticles/vue3']
-  }
+ 
 })
