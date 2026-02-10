@@ -1,10 +1,11 @@
-import { defineStore } from 'pinia'
+// import { defineStore } from 'pinia'
 import bcrypt from 'bcryptjs'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(null)
   const role = ref(null)
   const userId = ref(null)
+
 
   const login = async (phone) => {
     // Validate phone number

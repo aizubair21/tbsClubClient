@@ -1,9 +1,13 @@
 <script setup>
 const auth = useAuthStore()
+const data = useDataStore()
 
 if (!auth.isAuthenticated) {
   await navigateTo('/login')
 }
+
+const isModalOpen = ref(false)
+const openModalFor = ref('')
 
 const deposits = ref([])
 const editing = ref(null)
@@ -84,8 +88,8 @@ onMounted(fetchDeposits)
       <table class="min-w-full table-auto bordered">
         <thead>
           <tr class="">
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member Code</th>
+            <th @click="isModalOpen = !isModalOpen" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
@@ -117,6 +121,8 @@ onMounted(fetchDeposits)
     </div>
 
   </div>
+
+
   <!-- Edit Form Modal -->
   <div v-if="editing" class="fixed inset-1 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" @click="editing = null">
     <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-2xl bg-white" @click.stop>
@@ -148,4 +154,27 @@ onMounted(fetchDeposits)
       </div>
     </div>
   </div>
+
+
+  <Modal :isOpen="isModalOpen" @close="isModalOpen = false">
+    <Input type="search"  />
+    <div class="flex items-center justify-between">
+      <div>
+        0 Selected
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <button>Select All</button>
+        <button class="ml-2">Clear</button>
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <div class="flex items-center justify-start" >
+        <input type="checkbox" class="w-8 h-8 mr-3" />
+      </div>
+    </div>
+  </Modal>
+
+
 </template>

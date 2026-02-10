@@ -1,5 +1,7 @@
 <script setup>
 const auth = useAuthStore()
+const data = useDataStore()
+
 
 if (!auth.isAuthenticated) {
   await navigateTo('/login')
@@ -100,34 +102,16 @@ onMounted(async () => {
         <input v-model.number="form.amount" placeholder="Amount" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
         <select v-model="form.type" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Type</option>
-          <option value="Monthly">Monthly</option>
-          <option value="Yearly">Yearly</option>
-          <option value="Maintenance">Maintenance</option>
+          <option v-for="type in data.typeArray" :value="type"> {{ type }} </option>
         </select>
         <select v-model="form.session" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Session</option>
-          <option value="2024-25">2024-25</option>
-          <option value="2025-26">2025-26</option>
-          <option value="2026-27">2026-27</option>
-          <option value="2027-28">2027-28</option>
-          <option value="2028-29">2028-29</option>
-          <option value="2029-30">2029-30</option>
+          <option v-for="session in data.sessionArray" :value="session"> {{ session }} </option>
         </select>
         <select v-model="form.month" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Month</option>
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
-          <option value="April">April</option>
-          <option value="May">May</option>
-          <option value="June">June</option>
-          <option value="July">July</option>
-          <option value="August">August</option>
-          <option value="September">September</option>
-          <option value="October">October</option>
-          <option value="November">November</option>
-          <option value="December">December</option>
-        </select>
+          <option v-for="month in data.monthArray" :value="month" > {{ month }} </option>
+        </select> 
         <input v-model="form.method" placeholder="Method" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
         <input v-model="form.pay_to" placeholder="Pay To" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
         <input v-model="form.send_number" placeholder="Send Number" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />

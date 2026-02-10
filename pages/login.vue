@@ -5,6 +5,7 @@ import { loadSlim } from '@tsparticles/slim'
 const auth = useAuthStore()
 const phone = ref('')
 const error = ref('')
+const isModelOpen = ref(0)
 definePageMeta({
   layout:false,  
 })
@@ -17,6 +18,7 @@ const login = async () => {
     error.value = e.message || 'Login failed'
   }
 }
+
 
 const validatePhone = () => {
   const phoneRegex = /^(017|013|018|019|014|015)\d{8}$/

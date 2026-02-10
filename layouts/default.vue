@@ -17,7 +17,7 @@ const logout = () => {
     <div v-if="isAsideOpen" @click="isAsideOpen = false" class="fixed inset-0 bg-opacity-50 z-40 md:hidden"></div>
 
     <!-- Aside -->
-    <aside class="w-64 bg-gray-800 lg:opacity-70 text-white fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:block" :class="{ 'translate-x-0': isAsideOpen }">
+    <aside class="w-64 bg-gray-800 lg:opacity-70 text-white fixed inset-y-0 left-0 z-5 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:block" :class="{ 'translate-x-0': isAsideOpen }">
       <div class="p-4">
         <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 shadow-lg">
@@ -71,21 +71,20 @@ const logout = () => {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
           </button>
-          <h1 class="text-xl font-semibold">তারকারাজী বিজনেস</h1>
+          <h1 class="text-xl font-semibold"> {{ auth.userName }} তারকারাজী বিজনেস</h1>
         </div>
         <Button variant="danger" @click="logout">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
           </svg>
           <p>
-
             লগআউট
           </p>
         </Button>
       </header>
 
       <!-- Main -->
-      <main class=" p-6 overflow-x-auto">
+      <main class="p-2 sm:p-6 overflow-x-auto">
         <!-- Additional content can go here -->
         <slot></slot>
       </main>
