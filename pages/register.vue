@@ -1,6 +1,6 @@
 <script setup>
-import Particles from '@tsparticles/vue3'
-import { loadSlim } from '@tsparticles/slim'
+// import Particles from '@tsparticles/vue3'
+// import { loadSlim } from '@tsparticles/slim'
 
 const form = ref({
   username: '',
@@ -92,107 +92,100 @@ const register = async () => {
     })
 
     // Show success toast
-    const toast = useNuxtApp().$toast
-    toast.success('Registration successful! Please login.')
+    // const toast = useNuxtApp().$toast
+    // toast.success('Registration successful! Please login.')
 
     // Redirect to login
     await navigateTo('/login')
   } catch (error) {
     console.error('Registration error:', error)
-    const toast = useNuxtApp().$toast
-    toast.error(error.data?.message || 'Registration failed. Please try again.')
+    // const toast = useNuxtApp().$toast
+    // toast.error(error.data?.message || 'Registration failed. Please try again.')
   } finally {
     isSubmitting.value = false
   }
 }
 
-const particlesInit = async (engine) => {
-  await loadSlim(engine)
-}
+// const particlesInit = async (engine) => {
+//   await loadSlim(engine)
+// }
 
-const particlesLoaded = async (container) => {
-  console.log('Particles container loaded', container)
-}
+// const particlesLoaded = async (container) => {
+//   console.log('Particles container loaded', container)
+// }
 
-const particlesOptions = {
-  background: {
-    color: {
-      value: '#f3f4f6',
-    },
-  },
-  fpsLimit: 120,
-  interactivity: {
-    events: {
-      onClick: {
-        enable: true,
-        mode: 'push',
-      },
-      onHover: {
-        enable: true,
-        mode: 'repulse',
-      },
-      resize: true,
-    },
-    modes: {
-      push: {
-        quantity: 4,
-      },
-      repulse: {
-        distance: 200,
-        duration: 0.4,
-      },
-    },
-  },
-  particles: {
-    color: {
-      value: '#3b82f6',
-    },
-    links: {
-      color: '#3b82f6',
-      distance: 150,
-      enable: true,
-      opacity: 0.5,
-      width: 1,
-    },
-    move: {
-      direction: 'none',
-      enable: true,
-      outModes: {
-        default: 'bounce',
-      },
-      random: false,
-      speed: 2,
-      straight: false,
-    },
-    number: {
-      density: {
-        enable: true,
-      },
-      value: 80,
-    },
-    opacity: {
-      value: 0.5,
-    },
-    shape: {
-      type: 'circle',
-    },
-    size: {
-      value: { min: 1, max: 5 },
-    },
-  },
-  detectRetina: true,
-}
+// const particlesOptions = {
+//   background: {
+//     color: {
+//       value: '#f3f4f6',
+//     },
+//   },
+//   fpsLimit: 120,
+//   interactivity: {
+//     events: {
+//       onClick: {
+//         enable: true,
+//         mode: 'push',
+//       },
+//       onHover: {
+//         enable: true,
+//         mode: 'repulse',
+//       },
+//       resize: true,
+//     },
+//     modes: {
+//       push: {
+//         quantity: 4,
+//       },
+//       repulse: {
+//         distance: 200,
+//         duration: 0.4,
+//       },
+//     },
+//   },
+//   particles: {
+//     color: {
+//       value: '#3b82f6',
+//     },
+//     links: {
+//       color: '#3b82f6',
+//       distance: 150,
+//       enable: true,
+//       opacity: 0.5,
+//       width: 1,
+//     },
+//     move: {
+//       direction: 'none',
+//       enable: true,
+//       outModes: {
+//         default: 'bounce',
+//       },
+//       random: false,
+//       speed: 2,
+//       straight: false,
+//     },
+//     number: {
+//       density: {
+//         enable: true,
+//       },
+//       value: 80,
+//     },
+//     opacity: {
+//       value: 0.5,
+//     },
+//     shape: {
+//       type: 'circle',
+//     },
+//     size: {
+//       value: { min: 1, max: 5 },
+//     },
+//   },
+//   detectRetina: true,
+// }
 </script>
 
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 relative overflow-hidden py-8">
-    <!-- <Particles
-      id="tsparticles"
-      :options="particlesOptions"
-      :particlesInit="particlesInit"
-      :particlesLoaded="particlesLoaded"
-      class="absolute inset-0"
-    /> -->
     <div class="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-2xl p-10 w-full max-w-lg relative z-10 transform hover:scale-105 transition-transform duration-300">
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 shadow-lg">
