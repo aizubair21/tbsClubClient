@@ -23,6 +23,17 @@ export default defineNuxtConfig({
       },
     },
   },
+  app: {
+    head: {
+      title: 'তারকারাজী বিজনেস', // default fallback title
+      htmlAttrs: {
+        lang: 'en',
+      },
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/logo.jpg' },
+      ],
+    },
+  },
   devtools: { enabled: true },
- 
+
 })

@@ -6,6 +6,7 @@ export const useAuthStore = defineStore('auth', () => {
   const role = ref(null)
   const userId = ref(null)
   const userName = ref(null);
+  const isLoading = ref(false)
 
 
   const login = async (phone) => {
@@ -34,7 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => role.value === 'admin')
 
-  return { token, role, login, logout, isAuthenticated, isAdmin, userName }
+  return { token, role, userId, login, logout, isAuthenticated, isAdmin, userName, isLoading }
 }, {
   persist: true,
 })

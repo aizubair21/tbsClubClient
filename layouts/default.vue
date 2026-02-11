@@ -8,6 +8,8 @@ const logout = () => {
   auth.logout()
   navigateTo('/login')
 }
+
+
 </script>
 
 <template>
@@ -20,11 +22,7 @@ const logout = () => {
     <aside class="w-64 bg-gray-800 lg:opacity-70 text-white fixed inset-y-0 left-0 z-10 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:block" :class="{ 'translate-x-0': isAsideOpen }">
       <div class="p-4">
         <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 shadow-lg">
-          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-          </svg>
-        </div>
+         <Logo />
         <p class="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-sans">
           <!-- role name  -->
         </p>
@@ -71,7 +69,12 @@ const logout = () => {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
           </button>
-          <h1 class="text-xl font-semibold"> {{ auth.userName }}</h1>
+          <h1 class="text-xl font-semibold flex items-center justify-start space-x-2">  <!-- loading spinner -->
+            <div v-if="auth.isLoading" class="flex justify-center items-center mr-3">
+              <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+            </div>
+            {{ auth.userName }}
+          </h1>
         </div>
         <Button variant="danger" @click="logout">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -86,7 +89,9 @@ const logout = () => {
       <!-- Main -->
       <main class="p-2 sm:p-6 overflow-x-auto">
         <!-- Additional content can go here -->
-        <slot></slot>
+         <div class='z-1'>
+           <slot></slot>
+          </div>
       </main>
    </div>
    </div>
@@ -96,7 +101,7 @@ const logout = () => {
   .router-link-active{
     border:1px solid;
     border-left: 5px solid #fff;
-
+    color:white;
   }
 </style>
 e
