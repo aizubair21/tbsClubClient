@@ -28,6 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
     role.value = null
     userId.value = null
+    userName.value= null
   }
 
   const isAuthenticated = computed(() => !!token.value)
