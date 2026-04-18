@@ -1,6 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
+  runtimeConfig: {
+    private: {
+      googleApiKey: process.env.GOOGLE_PRIVATE_KEY,
+      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    },
+    public: {
+      endpoint:process.env.GOOGLE_API_ENDPOINT,
+      
+    }
+  },
   modules: [
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',

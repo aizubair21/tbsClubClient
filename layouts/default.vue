@@ -19,7 +19,7 @@ const logout = () => {
     <div v-if="isAsideOpen" @click="isAsideOpen = false" class="fixed inset-0 bg-opacity-50 z-40 md:hidden"></div>
 
     <!-- Aside -->
-    <aside class="w-64 bg-gray-800 lg:opacity-70 text-white fixed inset-y-0 left-0 z-10 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:block" :class="{ 'translate-x-0': isAsideOpen }">
+    <aside class="w-64 bg-gray-800 lg:opacity-70 text-white fixed inset-y-0 left-0 z-3 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:block" :class="{ 'translate-x-0': isAsideOpen }">
       <div class="p-4">
         <div class="text-center mb-6">
          <Logo />
@@ -41,7 +41,7 @@ const logout = () => {
                   </svg>
                   সদস্যবৃন্দ
                 </NuxtLink>
-                <NuxtLink to="/deposits" class="flex items-center py-3 px-4 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                <NuxtLink to="/sheet" class="flex items-center py-3 px-4 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition-colors">
                   <svg class="w-5 h-5 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                   </svg>
@@ -53,6 +53,7 @@ const logout = () => {
                   </svg>
                   পরিচালক
                 </NuxtLink>
+                
                 <!-- <hr></hr>
                 <button @click="logout" class="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">  লগআউট </button> -->
         </nav>
@@ -89,6 +90,7 @@ const logout = () => {
       <!-- Main -->
       <main class="p-2 sm:p-6 overflow-x-auto">
         <!-- Additional content can go here -->
+
          <div class='z-1'>
            <slot></slot>
           </div>

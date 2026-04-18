@@ -6,13 +6,13 @@ if (!auth.isAuthenticated) {
   await navigateTo('/login')
 }
 
-const deposits = ref([]);
+// const deposits = ref([]);
 const users = ref([]);
 const members = ref([]);
 
 const getData = async () => {
   
-  deposits.value = await $fetch('/api/deposits')
+  // deposits.value = await $fetch('/api/deposits')
   members.value = await $fetch('/api/members')
   users.value = await $fetch('/api/users')
   
@@ -20,13 +20,19 @@ const getData = async () => {
   auth.isLoading = false;
   
 }
-// const { data: deposits } = await useAsyncData('deposits', () => $fetch('/api/deposits'))
+const { data: deposits } = await useAsyncData('deposits', () => $fetch('/api/deposits'))
 
 const totalDeposit = computed(() => deposits.value?.reduce((sum, d) => sum + d.amount, 0) || 0)
 const totalMember = computed(() => members.value?.length || 0)
 const totalUser = computed(() => users.value?.length || 0)
 const lastFiveDeposit = computed(() => deposits.value.slice(deposits.value.length > 5 ? deposits.value.length - 5 : 0, deposits.value.length > 5 ? deposits.value.length : 1) );
 const lastFiveMembers = computed(() => users.value.slice(users.value.length > 5 ? users.value.length - 5 : 0, users.value.length > 5 ? users.value.length : 1) );
+
+const monthlyDeposit = computed(() => deposits.value?.filter(d => d.type === 'Monthly').reduce((sum, d) => sum + d.amount, 0) || 0)
+const yearlyDeposit = computed(() => deposits.value?.filter(d => d.type === 'Yearly').reduce((sum, d) => sum + d.amount, 0) || 0)
+const costDeposit = computed(() => deposits.value?.filter(d => d.type === 'Cost').reduce((sum, d) => sum + d.amount, 0) || 0)
+const currentMonthDeposit = computed(() => deposits.value?.filter(d => d.month === auth.currentMonth && d.session === auth.currentSession).reduce((sum, d) => sum + d.amount, 0) || 0)
+const currentSessionDeposit = computed(() => deposits.value?.filter(d => d.session === auth.currentSession).reduce((sum, d) => sum + d.amount, 0) || 0)
 
 onMounted(()=>{
   getData()
@@ -45,7 +51,7 @@ onMounted(()=>{
     </h1>
   
     <!-- overview  -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
         <h2 class="text-sm font-medium text-gray-600"> মোট আমানত </h2>
         <p class="text-2xl font-bold text-gray-900">{{ totalDeposit }} ৳</p>
@@ -57,6 +63,26 @@ onMounted(()=>{
       <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
         <h2 class="text-sm font-medium text-gray-600"> ব্যবহারকারী </h2>
         <p class="text-2xl font-bold text-gray-900">{{ totalUser }} জন</p>
+      </div>
+      <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+        <h2 class="text-sm font-medium text-gray-600"> মাসিক আমানত </h2>
+        <p class="text-2xl font-bold text-gray-900">{{ monthlyDeposit }} ৳</p>
+      </div>
+      <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+        <h2 class="text-sm font-medium text-gray-600"> বার্ষিক আমানত </h2>
+        <p class="text-2xl font-bold text-gray-900">{{ yearlyDeposit }} ৳</p>
+      </div>
+      <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+        <h2 class="text-sm font-medium text-gray-600"> খরচ আমানত </h2>
+        <p class="text-2xl font-bold text-gray-900">{{ costDeposit }} ৳</p>
+      </div>
+      <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+        <h2 class="text-sm font-medium text-gray-600"> চলতি মাসের আমানত </h2>
+        <p class="text-2xl font-bold text-gray-900">{{ currentMonthDeposit }} ৳</p>
+      </div>
+      <div class=" bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+        <h2 class="text-sm font-medium text-gray-600"> চলতি সেশনের আমানত </h2>
+        <p class="text-2xl font-bold text-gray-900">{{ currentSessionDeposit }} ৳</p>
       </div>
     </div>
   

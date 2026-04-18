@@ -1,8 +1,8 @@
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div v-if="isOpen" class="fixed inset-0 px-2 sm:px-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm" @click.self="$emit('close')">
-        <div class="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-2xl p-6 w-full max-w-md relative transform transition-all duration-300">
+      <div v-if="isOpen" class="fixed inset-0 px-2 sm:px-0 z-10 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm" @click.self="$emit('close')">
+        <div class="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-2xl p-6 w-full max-w-6xl relative transform transition-all duration-300">
           <button
             @click="$emit('close')"
             class="absolute top-3 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200">

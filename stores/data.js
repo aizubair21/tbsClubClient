@@ -1,6 +1,8 @@
+import { defineStore } from 'pinia'
+
 export const useDataStore = defineStore('data', () => {
 
-    const monthArray = ref(
+    const months = ref(
         [
             'January', 
             'February', 
@@ -16,7 +18,7 @@ export const useDataStore = defineStore('data', () => {
             'December'
         ]
     );
-    const sessionArray = ref(
+    const sessions = ref(
         [
             '2023-24',
             '2024-25',
@@ -26,9 +28,26 @@ export const useDataStore = defineStore('data', () => {
         ]
     );
 
-    const typeArray = ref(['Monthly', 'Yearly', 'Cost']);
-    const methodArray = ref(['Bkash', 'Nogod', 'Cash', 'Bank']);
+    const types = ref(['Monthly', 'Yearly', 'Cost']);
+    const methods = ref(['Bkash', 'Nogod', 'Cash', 'Bank']);
+    const deposits = ref([]);
 
+    const refreshDeposits = async (userId) => 
+    {
+        return await $fetch('/api/sheets/deposits');
+        return await data.filter((d) => {
+            d[2] == 200;
+        });
+    }
 
-    return {monthArray, sessionArray, typeArray, methodArray}
-});
+    const resetDeposits = () => 
+    {
+        deposits.value = null;
+    }
+
+    return {months, sessions, types, methods, deposits, refreshDeposits, resetDeposits}
+}, 
+{
+  persist: true,
+}
+);

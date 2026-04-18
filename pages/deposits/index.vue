@@ -58,10 +58,10 @@ const filteredDeposits = computed(() => {
 const filteredOptions = computed(() => {
   const result = {}
   Object.keys(filters).forEach(key => {
-    result[key] = filters[key].options.filter(option =>
-      option.toLowerCase().includes(filters[key].search.toLowerCase())
-    )
-  })
+    result[key] = filters[key].options
+  })  
+  console.log(result);
+  
   return result
 })
 
@@ -83,9 +83,7 @@ const clearAll = (key) => {
 }
 
 const fetchDeposits = async () => {
-  deposits.value = await $fetch('/api/deposits', {
-    headers: { Authorization: `Bearer ${auth.token}`, 'x-user-id': auth.userId }
-  })
+  deposits.value = await $fetch('/api/deposits')
 
   // Populate filter options and select all by default
   Object.keys(filters).forEach(key => {
@@ -109,7 +107,8 @@ const updateDeposit = async () => {
   })
   editing.value = null
   resetForm()
-  await fetchDeposits()
+  fetchDeposits()
+  isModalOpen.value = false
 }
 
 const deleteDeposit = async (id) => {
@@ -117,7 +116,7 @@ const deleteDeposit = async (id) => {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${auth.token}`, 'x-user-id': auth.userId }
   })
-  await fetchDeposits()
+  fetchDeposits()
 }
 
 const resetForm = () => {
@@ -141,7 +140,7 @@ const openModal = (key) => {
 const fetchUsers = async () => {
   let u = await $fetch('/api/users');
   await u.forEach( item => users.value[item.id] = item.name)
-  console.log(users);
+  console.log(deposits);
   
 }
 onMounted(() => {
@@ -202,7 +201,7 @@ onMounted(() => {
 
 
   <!-- Edit Form Modal -->
-  <div v-if="editing" class="fixed inset-1 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" @click="editing = null">
+  <div v-if="editing" class="fixed inset-1 z-9 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" @click="editing = null">
     <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-2xl bg-white" @click.stop>
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Deposit</h3>
@@ -214,7 +213,7 @@ onMounted(() => {
             <input v-model="form.session" placeholder="Session" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
             <input v-model="form.month" placeholder="Month" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
             <input v-model="form.method" placeholder="Method" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
-            <input v-model="form.pay_to" placeholder="Pay To" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+            <input v-model="form.pay_to" placeholder="Pay To" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
             <input v-model="form.send_number" placeholder="Send Number" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
             <input v-model="form.receive_number" placeholder="Receive Number" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
             <input v-model="form.date" type="date" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
@@ -235,10 +234,10 @@ onMounted(() => {
 
 
   <Modal :isOpen="isModalOpen" @close="isModalOpen = false">
-    <div class="max-h-96 overflow-y-auto">
+    <div class="max-h-96">
       <div v-if="openModalFor" :key="openModalFor">
         <h4 class="text-lg font-semibold mb-2 capitalize"> {{ openModalFor }} </h4>
-        <Input v-model="filters[openModalFor].search" placeholder="Search..." class="mb-2" />
+        <!-- <Input v-model="filters[openModalFor].search" placeholder="Search..." class="mb-2" /> -->
         <div class="flex items-center justify-between mb-2">
           <div>{{ filters[openModalFor].selected.length }} Selected</div>
           <div class="flex items-center space-x-2">
@@ -246,7 +245,7 @@ onMounted(() => {
             <button @click="clearAll(openModalFor)" class="text-red-600 hover:text-red-800">Clear</button>
           </div>
         </div>
-        <div class="space-y-1 max-h-40 overflow-y-auto">
+        <div class="space-y-1 max-h-40 ">
           <div v-for="option in filteredOptions[openModalFor]" :key="option" class="flex items-center">
             <input
               :id="`${openModalFor}-${option}`"

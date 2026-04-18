@@ -40,8 +40,7 @@ const addDeposit = async () => {
     headers: { Authorization: `Bearer ${auth.token}` },
     body: { ...form, created_at: new Date().toISOString() }
   })
-  resetForm()
-  await fetchDeposits()
+  navigateTo('/deposits')
 }
 
 const editDeposit = (deposit) => {
@@ -112,8 +111,12 @@ onMounted(async () => {
           <option value="">Select Month</option>
           <option v-for="month in data.monthArray" :value="month" > {{ month }} </option>
         </select> 
-        <input v-model="form.method" placeholder="Method" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
-        <input v-model="form.pay_to" placeholder="Pay To" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
+        <select v-model="form.method" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
+          <option value="">Select Month</option>
+          <option v-for="month in data.methodArray" :value="month" > {{ month }} </option>
+        </select> 
+       
+        <input v-model="form.pay_to" placeholder="Pay To" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
         <input v-model="form.send_number" placeholder="Send Number" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
         <input v-model="form.receive_number" placeholder="Receive Number" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
         <input v-model="form.date" type="date" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
