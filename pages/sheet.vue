@@ -51,6 +51,7 @@ const filters = reactive({
   date: { selected: [], options: [], search: '', active: false }
 })
 
+
 // Map filter keys to their index positions
 const filterKeyToIndex = {
   user_id: INDEX.user_id,
@@ -135,6 +136,7 @@ const activeFiltersCount = computed(() => {
 })
 
 const fetchDeposits = async () => {
+  auth.isLoading = true;
   isLoading.value = true
   error.value = null
   
@@ -150,6 +152,7 @@ const fetchDeposits = async () => {
     console.error('Error fetching deposits:', err)
   } finally {
     isLoading.value = false
+    auth.isLoading = false
   }
 }
 
@@ -235,6 +238,11 @@ const stats = computed(() => {
 
 onMounted(() => {
   fetchDeposits()
+  if(!auth.isAdmin)
+  {
+    filters.user_id.selected = auth.userId;
+    filters.user_id.active = true;
+  }
 })
 </script>
 

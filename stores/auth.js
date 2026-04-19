@@ -13,19 +13,18 @@ export const useAuthStore = defineStore('auth', () => {
   
   const data = useDataStore();
 
-  const login = async (phone) => {
+  const login = async (email) => {
 
     // Validate phone number
-    const phoneRegex = /^(017|013|018|019|014|015)\d{8}$/
-    if (!phoneRegex.test(phone)) {
-      throw new Error('Invalid phone number.')
-    }
+    // const phoneRegex = /^(017|013|018|019|014|015)\d{8}$/
+    // if (!phoneRegex.test(phone)) {
+    //   throw new Error('Invalid phone number.')
+    // }
 
     const now = new Date()
     const users = await $fetch('/api/sheets/users')
-    const user = users.find(u => u[11])
-    console.log(user);
-
+    console.log(users)
+    const user = users.find(u => u[12] == email)
     if (!user) throw new Error('User not found')
 
     token.value = now;

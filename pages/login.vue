@@ -17,16 +17,6 @@ const login = async () => {
   }
 }
 
-
-const validatePhone = () => {
-  const phoneRegex = /^(017|013|018|019|014|015)\d{8}$/
-  if (!phoneRegex.test(phone.value)) {
-    error.value = 'Invalid phone number'
-  } else {
-    error.value = ''
-  }
-}
-
 </script>
 
 <template>
@@ -43,15 +33,14 @@ const validatePhone = () => {
       </div>
       <form @submit.prevent="login" class="space-y-6">
         <div class="relative">
-          <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Your Email</label>
           <div class="relative">
             <input
               id="phone"
               v-model="phone"
-              type="tel"
-              placeholder="01712345678"
+              type="email"
+              placeholder="test@example.com"
               required
-              @input="validatePhone"
               class="border-2 border-gray-300 rounded-xl px-4 py-3 pl-12 w-full focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200 text-lg"
             />
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
