@@ -118,8 +118,6 @@ const userTotalDeposit = computed(() => {
 })
 
 
-// Add to your script section
-
 // 1. Monthly Trends (Last 6 months)
 const monthlyTrends = computed(() => {
   const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 
@@ -254,6 +252,8 @@ onMounted(() => {
 
 <template>
   <div v-if="deposits.length > 0" class="space-y-6">
+  
+
     <!-- Header -->
     <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
       <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -309,208 +309,180 @@ onMounted(() => {
       </div>
     </div>
 
-  <!-- Add after existing overview section -->
-  
-  <!-- Key Performance Indicators (KPIs) -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-    <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 text-white shadow-xl">
-      <div class="flex justify-between items-start">
-        <div>
-          <p class="text-sm opacity-90">গড় আমানত</p>
-          <p class="text-2xl font-bold mt-1">৳{{ averageDeposit.toLocaleString() }}</p>
-        </div>
-        <i class="fas fa-chart-line text-3xl opacity-50"></i>
-      </div>
-    </div>
-    
-    <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-5 text-white shadow-xl">
-      <div class="flex justify-between items-start">
-        <div>
-          <p class="text-sm opacity-90">গ্রোথ রেট</p>
-          <p class="text-2xl font-bold mt-1">
-            {{ growthRate > 0 ? '+' : '' }}{{ growthRate.toFixed(1) }}%
-          </p>
-        </div>
-        <i class="fas fa-arrow-trend-up text-3xl opacity-50"></i>
-      </div>
-    </div>
-    
-    <div class="bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl p-5 text-white shadow-xl">
-      <div class="flex justify-between items-start">
-        <div>
-          <p class="text-sm opacity-90">সক্রিয় সদস্য</p>
-          <p class="text-2xl font-bold mt-1">{{ activeMembers }} জন</p>
-          <p class="text-xs opacity-75">গত ৩ মাসে</p>
-        </div>
-        <i class="fas fa-users text-3xl opacity-50"></i>
-      </div>
-    </div>
-    
-    <div class="bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl p-5 text-white shadow-xl">
-      <div class="flex justify-between items-start">
-        <div>
-          <p class="text-sm opacity-90">সংগ্রহ দক্ষতা</p>
-          <p class="text-2xl font-bold mt-1">{{ collectionEfficiency.toFixed(1) }}%</p>
-        </div>
-        <i class="fas fa-bullseye text-3xl opacity-50"></i>
-      </div>
-    </div>
-  </div>
-
-  <!-- Monthly Trends Chart -->
-  <div class="bg-white rounded-2xl p-6 shadow-xl">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-bold text-gray-800">মাসিক আমানত প্রবণতা</h3>
-      <div class="text-sm text-gray-500">
-        <i class="fas fa-calendar-alt mr-1"></i> সর্বশেষ ৬ মাস
-      </div>
-    </div>
-    <div class="h-64">
-      <div class="flex items-end h-48 gap-2">
-        <div v-for="(trend, idx) in monthlyTrends" :key="idx" 
-             class="flex-1 flex flex-col items-center group">
-          <div class="relative w-full">
-            <div class="bg-gradient-to-t from-green-400 to-green-500 rounded-t-lg transition-all duration-300 hover:from-green-500 hover:to-green-600"
-                 :style="{ height: `${(trend.total / Math.max(...monthlyTrends.map(t => t.total), 1)) * 100}%`, minHeight: '20px' }">
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs whitespace-nowrap">
-                ৳{{ trend.total.toLocaleString() }}
-              </div>
-            </div>
-          </div>
-          <span class="text-xs text-gray-600 mt-2">{{ trend.month.slice(0, 3) }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Top Contributors & Payment Methods -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Top Contributors -->
+    <!-- Deposit Type Distribution -->
     <div class="bg-white rounded-2xl p-6 shadow-xl">
       <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-        <i class="fas fa-trophy text-yellow-500 mr-2"></i>
-        শীর্ষ অবদানকারী
+        <i class="fas fa-chart-pie text-purple-500 mr-2"></i>
+        আমানতের ধরন
       </h3>
-      <div class="space-y-3">
-        <div v-for="(contributor, idx) in topContributors" :key="contributor.userId" 
-             class="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-          <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold"
-                 :class="{
-                   'bg-yellow-100 text-yellow-600': idx === 0,
-                   'bg-gray-200 text-gray-600': idx === 1,
-                   'bg-orange-100 text-orange-600': idx === 2,
-                   'bg-blue-100 text-blue-600': idx >= 3
-                 }">
-              {{ idx + 1 }}
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="text-center p-4 bg-green-50 rounded-xl">
+          <div class="text-3xl font-bold text-green-600">৳{{ monthlyDeposit.toLocaleString() }}</div>
+          <p class="text-sm text-gray-600 mt-1">মাসিক</p>
+          <p class="text-xs text-gray-500">{{ ((monthlyDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
+        </div>
+        <div class="text-center p-4 bg-blue-50 rounded-xl">
+          <div class="text-3xl font-bold text-blue-600">৳{{ yearlyDeposit.toLocaleString() }}</div>
+          <p class="text-sm text-gray-600 mt-1">বার্ষিক</p>
+          <p class="text-xs text-gray-500">{{ ((yearlyDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
+        </div>
+        <div class="text-center p-4 bg-red-50 rounded-xl">
+          <div class="text-3xl font-bold text-red-600">৳{{ costDeposit.toLocaleString() }}</div>
+          <p class="text-sm text-gray-600 mt-1">খরচ</p>
+          <p class="text-xs text-gray-500">{{ ((costDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Key Performance Indicators (KPIs) -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 text-white shadow-xl">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-sm opacity-90">গড় আমানত</p>
+            <p class="text-2xl font-bold mt-1">৳{{ averageDeposit.toLocaleString() }}</p>
+          </div>
+          <i class="fas fa-chart-line text-3xl opacity-50"></i>
+        </div>
+      </div>
+      
+      <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-5 text-white shadow-xl">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-sm opacity-90">গ্রোথ রেট</p>
+            <p class="text-2xl font-bold mt-1">
+              {{ growthRate > 0 ? '+' : '' }}{{ growthRate.toFixed(1) }}%
+            </p>
+          </div>
+          <i class="fas fa-arrow-trend-up text-3xl opacity-50"></i>
+        </div>
+      </div>
+      
+      <div class="bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl p-5 text-white shadow-xl">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-sm opacity-90">সক্রিয় সদস্য</p>
+            <p class="text-2xl font-bold mt-1">{{ activeMembers }} জন</p>
+            <p class="text-xs opacity-75">গত ৩ মাসে</p>
+          </div>
+          <i class="fas fa-users text-3xl opacity-50"></i>
+        </div>
+      </div>
+      
+      <div class="bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl p-5 text-white shadow-xl">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-sm opacity-90">সংগ্রহ দক্ষতা</p>
+            <p class="text-2xl font-bold mt-1">{{ collectionEfficiency.toFixed(1) }}%</p>
+          </div>
+          <i class="fas fa-bullseye text-3xl opacity-50"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Contributors & Payment Methods -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Top Contributors -->
+      <div class="bg-white rounded-2xl p-6 shadow-xl">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+          <i class="fas fa-trophy text-yellow-500 mr-2"></i>
+          শীর্ষ অবদানকারী
+        </h3>
+        <div class="space-y-3">
+          <div v-for="(contributor, idx) in topContributors" :key="contributor.userId" 
+               class="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold"
+                   :class="{
+                     'bg-yellow-100 text-yellow-600': idx === 0,
+                     'bg-gray-200 text-gray-600': idx === 1,
+                     'bg-orange-100 text-orange-600': idx === 2,
+                     'bg-blue-100 text-blue-600': idx >= 3
+                   }">
+                {{ idx + 1 }}
+              </div>
+              <div>
+                <p class="font-medium text-gray-800">{{ contributor.name }}</p>
+                <p class="text-xs text-gray-500">আইডি: {{ contributor.userId }}</p>
+              </div>
             </div>
-            <div>
-              <p class="font-medium text-gray-800">{{ contributor.name }}</p>
-              <p class="text-xs text-gray-500">আইডি: {{ contributor.userId }}</p>
+            <div class="text-right">
+              <p class="font-bold text-green-600">৳{{ contributor.total.toLocaleString() }}</p>
+              <p class="text-xs text-gray-500">
+                {{ ((contributor.total / totalDeposit) * 100).toFixed(1) }}% মোটের
+              </p>
             </div>
           </div>
-          <div class="text-right">
-            <p class="font-bold text-green-600">৳{{ contributor.total.toLocaleString() }}</p>
-            <p class="text-xs text-gray-500">
-              {{ ((contributor.total / totalDeposit) * 100).toFixed(1) }}% মোটের
+        </div>
+      </div>
+
+      <!-- Payment Methods Distribution -->
+      <div class="bg-white rounded-2xl p-6 shadow-xl">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+          <i class="fas fa-credit-card text-blue-500 mr-2"></i>
+          পেমেন্ট মেথড বিশ্লেষণ
+        </h3>
+        <div class="space-y-3">
+          <div v-for="method in paymentMethodStats" :key="method.method" class="space-y-1">
+            <div class="flex justify-between text-sm">
+              <span class="font-medium text-gray-700">{{ method.method || 'অন্যান্য' }}</span>
+              <span class="text-gray-600">৳{{ method.total.toLocaleString() }}</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                   :style="{ width: `${method.percentage}%` }"></div>
+            </div>
+            <p class="text-xs text-gray-500 text-right">{{ method.percentage.toFixed(1) }}%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions & Insights -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
+        <h3 class="text-lg font-bold mb-3">দ্রুত পদক্ষেপ</h3>
+        <div class="space-y-2">
+          <NuxtLink to="/deposits/new" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
+            <span><i class="fas fa-plus-circle mr-2"></i> নতুন আমানত যোগ করুন</span>
+            <i class="fas fa-arrow-right"></i>
+          </NuxtLink>
+          <NuxtLink to="/users/new" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
+            <span><i class="fas fa-user-plus mr-2"></i> নতুন সদস্য নিবন্ধন</span>
+            <i class="fas fa-arrow-right"></i>
+          </NuxtLink>
+          <NuxtLink to="/reports" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
+            <span><i class="fas fa-file-alt mr-2"></i> রিপোর্ট দেখুন</span>
+            <i class="fas fa-arrow-right"></i>
+          </NuxtLink>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-xl">
+        <h3 class="text-lg font-bold text-gray-800 mb-3">মূল্যবান পরামর্শ</h3>
+        <div class="space-y-3">
+          <div class="flex items-start space-x-2 p-2 bg-yellow-50 rounded-lg">
+            <i class="fas fa-lightbulb text-yellow-500 mt-0.5"></i>
+            <p class="text-sm text-gray-700">
+              গত মাসের তুলনায় গ্রোথ {{ growthRate > 0 ? 'বেড়েছে' : 'কমেছে' }} 
+              {{ Math.abs(growthRate).toFixed(1) }}%
+            </p>
+          </div>
+          <div v-if="activeMembers < totalUser" class="flex items-start space-x-2 p-2 bg-red-50 rounded-lg">
+            <i class="fas fa-exclamation-triangle text-red-500 mt-0.5"></i>
+            <p class="text-sm text-gray-700">
+              {{ totalUser - activeMembers }} জন সদস্য গত ৩ মাসে সক্রিয় নন
+            </p>
+          </div>
+          <div class="flex items-start space-x-2 p-2 bg-green-50 rounded-lg">
+            <i class="fas fa-chart-line text-green-500 mt-0.5"></i>
+            <p class="text-sm text-gray-700">
+              দৈনিক গড় সংগ্রহ: ৳{{ dailyAverage.toLocaleString() }}
             </p>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Payment Methods Distribution -->
-    <div class="bg-white rounded-2xl p-6 shadow-xl">
-      <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-        <i class="fas fa-credit-card text-blue-500 mr-2"></i>
-        পেমেন্ট মেথড বিশ্লেষণ
-      </h3>
-      <div class="space-y-3">
-        <div v-for="method in paymentMethodStats" :key="method.method" class="space-y-1">
-          <div class="flex justify-between text-sm">
-            <span class="font-medium text-gray-700">{{ method.method || 'অন্যান্য' }}</span>
-            <span class="text-gray-600">৳{{ method.total.toLocaleString() }}</span>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-2">
-            <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
-                 :style="{ width: `${method.percentage}%` }"></div>
-          </div>
-          <p class="text-xs text-gray-500 text-right">{{ method.percentage.toFixed(1) }}%</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Deposit Type Distribution -->
-  <div class="bg-white rounded-2xl p-6 shadow-xl">
-    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-      <i class="fas fa-chart-pie text-purple-500 mr-2"></i>
-      আমানতের ধরন
-    </h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="text-center p-4 bg-green-50 rounded-xl">
-        <div class="text-3xl font-bold text-green-600">৳{{ monthlyDeposit.toLocaleString() }}</div>
-        <p class="text-sm text-gray-600 mt-1">মাসিক</p>
-        <p class="text-xs text-gray-500">{{ ((monthlyDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
-      </div>
-      <div class="text-center p-4 bg-blue-50 rounded-xl">
-        <div class="text-3xl font-bold text-blue-600">৳{{ yearlyDeposit.toLocaleString() }}</div>
-        <p class="text-sm text-gray-600 mt-1">বার্ষিক</p>
-        <p class="text-xs text-gray-500">{{ ((yearlyDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
-      </div>
-      <div class="text-center p-4 bg-red-50 rounded-xl">
-        <div class="text-3xl font-bold text-red-600">৳{{ costDeposit.toLocaleString() }}</div>
-        <p class="text-sm text-gray-600 mt-1">খরচ</p>
-        <p class="text-xs text-gray-500">{{ ((costDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quick Actions & Insights -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
-      <h3 class="text-lg font-bold mb-3">দ্রুত পদক্ষেপ</h3>
-      <div class="space-y-2">
-        <NuxtLink to="/deposits/new" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
-          <span><i class="fas fa-plus-circle mr-2"></i> নতুন আমানত যোগ করুন</span>
-          <i class="fas fa-arrow-right"></i>
-        </NuxtLink>
-        <NuxtLink to="/users/new" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
-          <span><i class="fas fa-user-plus mr-2"></i> নতুন সদস্য নিবন্ধন</span>
-          <i class="fas fa-arrow-right"></i>
-        </NuxtLink>
-        <NuxtLink to="/reports" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
-          <span><i class="fas fa-file-alt mr-2"></i> রিপোর্ট দেখুন</span>
-          <i class="fas fa-arrow-right"></i>
-        </NuxtLink>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-2xl p-6 shadow-xl">
-      <h3 class="text-lg font-bold text-gray-800 mb-3">মূল্যবান পরামর্শ</h3>
-      <div class="space-y-3">
-        <div class="flex items-start space-x-2 p-2 bg-yellow-50 rounded-lg">
-          <i class="fas fa-lightbulb text-yellow-500 mt-0.5"></i>
-          <p class="text-sm text-gray-700">
-            গত মাসের তুলনায় গ্রোথ {{ growthRate > 0 ? 'বেড়েছে' : 'কমেছে' }} 
-            {{ Math.abs(growthRate).toFixed(1) }}%
-          </p>
-        </div>
-        <div v-if="activeMembers < totalUser" class="flex items-start space-x-2 p-2 bg-red-50 rounded-lg">
-          <i class="fas fa-exclamation-triangle text-red-500 mt-0.5"></i>
-          <p class="text-sm text-gray-700">
-            {{ totalUser - activeMembers }} জন সদস্য গত ৩ মাসে সক্রিয় নন
-          </p>
-        </div>
-        <div class="flex items-start space-x-2 p-2 bg-green-50 rounded-lg">
-          <i class="fas fa-chart-line text-green-500 mt-0.5"></i>
-          <p class="text-sm text-gray-700">
-            দৈনিক গড় সংগ্রহ: ৳{{ dailyAverage.toLocaleString() }}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
 
     <!-- Admin Section -->
     <div v-if="auth.isAdmin">
