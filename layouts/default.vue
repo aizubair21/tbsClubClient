@@ -47,13 +47,25 @@ const logout = () => {
                   </svg>
                   আমানত
                 </NuxtLink>
-                <NuxtLink v-if="auth.isAdmin" to="/members" class="flex items-center py-3 px-4 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                <hr />
+                <NuxtLink to="/members" class="flex items-center py-3 px-4 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition-colors">
                   <svg class="w-5 h-5 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                   </svg>
-                  পরিচালক
+                  জানুন 
                 </NuxtLink>
-                
+                <NuxtLink to="/members" class="flex items-center py-3 px-4 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                  <svg class="w-5 h-5 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                   নিয়মাবলি
+                </NuxtLink>
+                <NuxtLink to="/members" class="flex items-center py-3 px-4 rounded-lg hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                  <svg class="w-5 h-5 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                   কিভাবে যুক্ত হবেন
+                </NuxtLink>
                 <!-- <hr></hr>
                 <button @click="logout" class="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">  লগআউট </button> -->
         </nav>
