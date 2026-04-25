@@ -290,6 +290,7 @@ onMounted(fetchMembers)
             <!-- Action Buttons -->
             <div class="flex space-x-2 justify-end">
               <NuxtLink 
+                v-if="auth.isAdmin || auth.userId == member[USER_INDEX.user_id_display]"
                 :to="`/users/${member[USER_INDEX.user_id_display]}`" 
                 class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-2 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
                 title="বিস্তারিত দেখুন"
@@ -297,14 +298,14 @@ onMounted(fetchMembers)
                 <i class="fas fa-eye"></i>
               </NuxtLink>
               
-              <NuxtLink 
+              <!-- <NuxtLink 
                 v-if="auth.isAdmin" 
                 :to="`/users/${member[USER_INDEX.user_id_display]}`" 
                 class="bg-blue-500 text-white rounded-lg p-2 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
                 title="এডিট করুন"
               >
                 <i class="fas fa-edit"></i>
-              </NuxtLink>
+              </NuxtLink> -->
               
               <button 
                 v-if="auth.isAdmin && member[USER_INDEX.role] !== 'admin'" 

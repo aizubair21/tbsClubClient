@@ -41,12 +41,39 @@ const getAmount = (deposit) => {
   return parseFloat(deposit[INDEX.amount]) || 0
 }
 
+// Helper function to get type from indexed array
+const getType = (deposit) => {
+  return deposit[INDEX.type] || ''
+}
+
+// Helper function to get month from indexed array
+const getMonth = (deposit) => {
+  return deposit[INDEX.month] || ''
+}
+
+// Helper function to get session from indexed array
+const getSession = (deposit) => {
+  return deposit[INDEX.session] || ''
+}
 
 // Computed properties with proper indexed access
 const totalDeposit = computed(() => {
   return deposits.value?.reduce((sum, d) => sum + getAmount(d), 0) || 0
 })
 
+const totalMember = computed(() => {
+  // Filter users where role is 'member' or 'admin' based on your user structure
+  return users.value?.filter(u => u[17] === 'admin')?.length || 0
+})
+
+const totalUser = computed(() => {
+  // Filter users where role is 'user'
+  return users.value?.filter(u => u[17] === 'user')?.length || 0
+})
+
+const lastFiveDeposit = computed(() => {
+  return deposits.value?.slice(-5).reverse() || []
+})
 
 const lastFiveMembers = computed(() => {
   // Get last 5 users (adjust based on your user structure)
@@ -65,6 +92,16 @@ const yearlyDeposit = computed(() => {
 
 const costDeposit = computed(() => {
   return deposits.value?.filter(d => getType(d) === 'Maintainanc')
+    .reduce((sum, d) => sum + getAmount(d), 0) || 0
+})
+
+const currentMonthDeposit = computed(() => {
+  return deposits.value?.filter(d => getMonth(d) === auth.currentMonth && getSession(d) === auth.currentSession)
+    .reduce((sum, d) => sum + getAmount(d), 0) || 0
+})
+
+const currentSessionDeposit = computed(() => {
+  return deposits.value?.filter(d => getSession(d) === auth.currentSession)
     .reduce((sum, d) => sum + getAmount(d), 0) || 0
 })
 
@@ -226,7 +263,7 @@ onBeforeMount(() => {
     </div>
 
     <!-- Overview Section -->
-    <DepositOverview v-if="deposits.length > 0" :deposits />
+    <DepositOverview v-if="auth.isAdmin" :deposits />
 
     <!-- Deposit Type Distribution -->
     <div class="bg-white rounded-2xl p-6 shadow-xl">
