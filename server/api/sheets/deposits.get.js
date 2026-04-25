@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const response = await $fetch(url)
-    return response.values;
+    return response.values.reverse();
   } catch (error) {
     console.error(error)
     throw createError({ statusCode: 500, message: 'Failed to fetch sheet data' })

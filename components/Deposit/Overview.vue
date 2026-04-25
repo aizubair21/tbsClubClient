@@ -1,0 +1,121 @@
+<script setup>
+// Correct way to define props
+const props = defineProps({
+  deposits: {
+    type: Array,
+    required: true,
+    default: () => []
+  }
+})
+
+const auth = useAuthStore();
+
+// Index mapping based on Google Sheets data structure
+const INDEX = {
+  user_id: 0,
+  session: 1,
+  amount: 2,
+  type: 3,
+  month: 4,
+  method: 5,
+  pay_to: 6,
+  send_from: 7,
+  date: 10
+}
+
+
+const getAmount = (deposit) => {
+  return parseFloat(deposit[INDEX.amount]) || 0
+}
+// Helper function to get type from indexed array
+const getType = (deposit) => {
+  return deposit[INDEX.type] || ''
+}
+
+// Helper function to get month from indexed array
+const getMonth = (deposit) => {
+  return deposit[INDEX.month] || ''
+}
+
+// Helper function to get session from indexed array
+const getSession = (deposit) => {
+  return deposit[INDEX.session] || ''
+}
+
+const totalDeposit = computed(() => {
+  return props.deposits?.reduce((sum, d) => sum + getAmount(d), 0) || 0
+})
+
+const monthlyDeposit = computed(() => {
+  return props.deposits?.filter(d => getType(d) === 'Monthly')
+    .reduce((sum, d) => sum + getAmount(d), 0) || 0
+})
+
+const yearlyDeposit = computed(() => {
+  return props.deposits?.filter(d => getType(d) === 'Yearly')
+    .reduce((sum, d) => sum + getAmount(d), 0) || 0
+})
+
+const costDeposit = computed(() => {
+  return props.deposits?.filter(d => getType(d) === 'Maintainanc')
+    .reduce((sum, d) => sum + getAmount(d), 0) || 0
+})
+
+const currentMonthDeposit = computed(() => {
+  return props.deposits?.filter(d => getMonth(d) === auth.currentMonth && getSession(d) === auth.currentSession)
+    .reduce((sum, d) => sum + getAmount(d), 0) || 0
+})
+
+const currentSessionDeposit = computed(() => {
+  return props.deposits?.filter(d => getSession(d) === auth.currentSession)
+    .reduce((sum, d) => sum + getAmount(d), 0) || 0
+})
+
+
+</script>
+
+<template>
+	
+ <!-- Deposits Overview Section -->
+<div>
+  <h2 class="text-xl font-bold text-white mb-4 pb-2 border-b border-gray-300"> এক নজরে দেখা </h2>
+  
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+      <h3 class="text-sm font-medium text-gray-600 mb-2">মোট আমানত</h3>
+      <p class="text-2xl font-bold text-green-600">{{ totalDeposit.toLocaleString() }} ৳</p>
+    </div>
+     
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+      <h3 class="text-sm font-medium text-gray-600 mb-2">মাসিক আমানত</h3>
+      <p class="text-2xl font-bold text-teal-600">{{ monthlyDeposit.toLocaleString() }} ৳</p>
+    </div>
+    
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+      <h3 class="text-sm font-medium text-gray-600 mb-2">বার্ষিক আমানত</h3>
+      <p class="text-2xl font-bold text-indigo-600">{{ yearlyDeposit.toLocaleString() }} ৳</p>
+    </div>
+    
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+      <h3 class="text-sm font-medium text-gray-600 mb-2">খরচ</h3>
+      <p class="text-2xl font-bold text-red-600">{{ costDeposit.toLocaleString() }} ৳</p>
+    </div>
+    
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+      <h3 class="text-sm font-medium text-gray-600 mb-2">চলতি মাসের আমানত</h3>
+      <p class="text-2xl font-bold text-orange-600">{{ currentMonthDeposit.toLocaleString() }} ৳</p>
+    </div>
+    
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+      <h3 class="text-sm font-medium text-gray-600 mb-2">চলতি সেশনের আমানত</h3>
+      <p class="text-2xl font-bold text-cyan-600">{{ currentSessionDeposit.toLocaleString() }} ৳</p>
+    </div>
+  </div>
+</div>
+
+</template>
+
+<style>
+	
+
+</style>

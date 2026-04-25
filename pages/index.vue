@@ -27,11 +27,11 @@ const getData = async () => {
   try {
     users.value = await $fetch('/api/sheets/users')
     deposits.value = await $fetch('/api/sheets/deposits');
-    console.log('Deposits data:', deposits.value);
-    console.log('Users data:', users.value);
+    //console.log('Deposits data:', deposits.value);
+    //console.log('Users data:', users.value);
     auth.isLoading = false;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    //console.error('Error fetching data:', error);
     auth.isLoading = false;
   }
 }
@@ -41,39 +41,12 @@ const getAmount = (deposit) => {
   return parseFloat(deposit[INDEX.amount]) || 0
 }
 
-// Helper function to get type from indexed array
-const getType = (deposit) => {
-  return deposit[INDEX.type] || ''
-}
-
-// Helper function to get month from indexed array
-const getMonth = (deposit) => {
-  return deposit[INDEX.month] || ''
-}
-
-// Helper function to get session from indexed array
-const getSession = (deposit) => {
-  return deposit[INDEX.session] || ''
-}
 
 // Computed properties with proper indexed access
 const totalDeposit = computed(() => {
   return deposits.value?.reduce((sum, d) => sum + getAmount(d), 0) || 0
 })
 
-const totalMember = computed(() => {
-  // Filter users where role is 'member' or 'admin' based on your user structure
-  return users.value?.filter(u => u[17] === 'admin')?.length || 0
-})
-
-const totalUser = computed(() => {
-  // Filter users where role is 'user'
-  return users.value?.filter(u => u[17] === 'user')?.length || 0
-})
-
-const lastFiveDeposit = computed(() => {
-  return deposits.value?.slice(-5).reverse() || []
-})
 
 const lastFiveMembers = computed(() => {
   // Get last 5 users (adjust based on your user structure)
@@ -91,17 +64,7 @@ const yearlyDeposit = computed(() => {
 })
 
 const costDeposit = computed(() => {
-  return deposits.value?.filter(d => getType(d) === 'Cost')
-    .reduce((sum, d) => sum + getAmount(d), 0) || 0
-})
-
-const currentMonthDeposit = computed(() => {
-  return deposits.value?.filter(d => getMonth(d) === auth.currentMonth && getSession(d) === auth.currentSession)
-    .reduce((sum, d) => sum + getAmount(d), 0) || 0
-})
-
-const currentSessionDeposit = computed(() => {
-  return deposits.value?.filter(d => getSession(d) === auth.currentSession)
+  return deposits.value?.filter(d => getType(d) === 'Maintainanc')
     .reduce((sum, d) => sum + getAmount(d), 0) || 0
 })
 
@@ -245,7 +208,7 @@ const dailyAverage = computed(() => {
 })
 
 
-onMounted(() => {
+onBeforeMount(() => {
   getData()
 })
 </script>
@@ -263,51 +226,7 @@ onMounted(() => {
     </div>
 
     <!-- Overview Section -->
-    <div>
-      <h2 class="text-xl font-bold text-white mb-4 pb-2 border-b border-gray-300">ওভারভিউ</h2>
-      
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-          <h3 class="text-sm font-medium text-gray-600 mb-2">মোট আমানত</h3>
-          <p class="text-2xl font-bold text-green-600">{{ totalDeposit.toLocaleString() }} ৳</p>
-        </div>
-        
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-          <h3 class="text-sm font-medium text-gray-600 mb-2">পরিচালক</h3>
-          <p class="text-2xl font-bold text-purple-600">{{ totalMember }} জন</p>
-        </div>
-        
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-          <h3 class="text-sm font-medium text-gray-600 mb-2">ব্যবহারকারী</h3>
-          <p class="text-2xl font-bold text-blue-600">{{ totalUser+totalMember }} জন</p>
-        </div>
-        
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-          <h3 class="text-sm font-medium text-gray-600 mb-2">মাসিক আমানত</h3>
-          <p class="text-2xl font-bold text-teal-600">{{ monthlyDeposit.toLocaleString() }} ৳</p>
-        </div>
-        
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-          <h3 class="text-sm font-medium text-gray-600 mb-2">বার্ষিক আমানত</h3>
-          <p class="text-2xl font-bold text-indigo-600">{{ yearlyDeposit.toLocaleString() }} ৳</p>
-        </div>
-        
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-          <h3 class="text-sm font-medium text-gray-600 mb-2">খরচ</h3>
-          <p class="text-2xl font-bold text-red-600">{{ costDeposit.toLocaleString() }} ৳</p>
-        </div>
-        
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-          <h3 class="text-sm font-medium text-gray-600 mb-2">চলতি মাসের আমানত</h3>
-          <p class="text-2xl font-bold text-orange-600">{{ currentMonthDeposit.toLocaleString() }} ৳</p>
-        </div>
-        
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-          <h3 class="text-sm font-medium text-gray-600 mb-2">চলতি সেশনের আমানত</h3>
-          <p class="text-2xl font-bold text-cyan-600">{{ currentSessionDeposit.toLocaleString() }} ৳</p>
-        </div>
-      </div>
-    </div>
+    <DepositOverview v-if="deposits.length > 0" :deposits />
 
     <!-- Deposit Type Distribution -->
     <div class="bg-white rounded-2xl p-6 shadow-xl">
@@ -438,111 +357,12 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Quick Actions & Insights -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
-        <h3 class="text-lg font-bold mb-3">দ্রুত পদক্ষেপ</h3>
-        <div class="space-y-2">
-          <NuxtLink to="/deposits/new" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
-            <span><i class="fas fa-plus-circle mr-2"></i> নতুন আমানত যোগ করুন</span>
-            <i class="fas fa-arrow-right"></i>
-          </NuxtLink>
-          <NuxtLink to="/users/new" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
-            <span><i class="fas fa-user-plus mr-2"></i> নতুন সদস্য নিবন্ধন</span>
-            <i class="fas fa-arrow-right"></i>
-          </NuxtLink>
-          <NuxtLink to="/reports" class="flex items-center justify-between p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
-            <span><i class="fas fa-file-alt mr-2"></i> রিপোর্ট দেখুন</span>
-            <i class="fas fa-arrow-right"></i>
-          </NuxtLink>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-xl">
-        <h3 class="text-lg font-bold text-gray-800 mb-3">মূল্যবান পরামর্শ</h3>
-        <div class="space-y-3">
-          <div class="flex items-start space-x-2 p-2 bg-yellow-50 rounded-lg">
-            <i class="fas fa-lightbulb text-yellow-500 mt-0.5"></i>
-            <p class="text-sm text-gray-700">
-              গত মাসের তুলনায় গ্রোথ {{ growthRate > 0 ? 'বেড়েছে' : 'কমেছে' }} 
-              {{ Math.abs(growthRate).toFixed(1) }}%
-            </p>
-          </div>
-          <div v-if="activeMembers < totalUser" class="flex items-start space-x-2 p-2 bg-red-50 rounded-lg">
-            <i class="fas fa-exclamation-triangle text-red-500 mt-0.5"></i>
-            <p class="text-sm text-gray-700">
-              {{ totalUser - activeMembers }} জন সদস্য গত ৩ মাসে সক্রিয় নন
-            </p>
-          </div>
-          <div class="flex items-start space-x-2 p-2 bg-green-50 rounded-lg">
-            <i class="fas fa-chart-line text-green-500 mt-0.5"></i>
-            <p class="text-sm text-gray-700">
-              দৈনিক গড় সংগ্রহ: ৳{{ dailyAverage.toLocaleString() }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Admin Section -->
     <div v-if="auth.isAdmin">
-      <!-- Recent Deposits -->
-      <div>
-        <h2 class="text-xl font-bold text-white mb-4 pb-2 border-b border-gray-300">সর্বশেষ আমানত</h2>
-        
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-gray-50 border-b">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ব্যবহারকারী আইডি</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">বিবরণ</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">পরিমাণ</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">তারিখ</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200">
-                <tr v-for="(deposit, index) in lastFiveDeposit" :key="index" class="hover:bg-gray-50 transition-colors">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ index + 1 }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ deposit[INDEX.user_id] }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <span class="capitalize">{{ deposit[INDEX.month] }}</span> 
-                    <span>{{ deposit[INDEX.session] }}</span>
-                    <span :class="{
-                      'text-green-600': deposit[INDEX.type] === 'Monthly',
-                      'text-blue-600': deposit[INDEX.type] === 'Yearly',
-                      'text-red-600': deposit[INDEX.type] === 'Cost'
-                    }">
-                      ({{ deposit[INDEX.type] }})
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
-                    ৳{{ getAmount(deposit).toLocaleString() }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ deposit[INDEX.date] || '-' }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm">
-                    <NuxtLink :to="`/deposits/${deposit[INDEX.user_id]}`" 
-                              class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                      <i class="fas fa-angle-right mr-1"></i> বিস্তারিত
-                    </NuxtLink>
-                  </td>
-                </tr>
-                <tr v-if="lastFiveDeposit.length === 0">
-                  <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-                    কোনো আমানতের তথ্য পাওয়া যায়নি
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
       <!-- Recent Members -->
       <div>
-        <h2 class="text-xl font-bold text-white mb-4 pb-2 border-b border-gray-300">সর্বশেষ নিবন্ধিত সদস্য</h2>
+        <h2 class="mt-2 text-xl font-bold text-white mb-4 pb-2 border-b border-gray-300">সর্বশেষ নিবন্ধিত সদস্য</h2>
         
         <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div class="divide-y divide-gray-200">

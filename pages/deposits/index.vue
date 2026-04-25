@@ -233,7 +233,7 @@ const stats = computed(() => {
   return { byType, byMethod, bySession }
 })
 
-onMounted(() => {
+onBeforeMount(() => {
   fetchDeposits()
 })
 </script>
@@ -279,9 +279,6 @@ onMounted(() => {
             <i class="fas fa-times-circle mr-1"></i> Clear All Filters
           </button>
         </div>
-        
-        <!-- Active Filters Display - FIXED: Changed 'filter' to 'filterConfig' -->
-
         
         
         <div class="text-sm text-gray-500">
