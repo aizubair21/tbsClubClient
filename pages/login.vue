@@ -4,9 +4,13 @@ const auth = useAuthStore()
 const phone = ref('')
 const error = ref('')
 const isModelOpen = ref(0)
+const config = useRuntimeConfig();
+
+
 definePageMeta({
   layout:false,  
 })
+
 const login = async () => {
   try {
     await auth.login(phone.value)

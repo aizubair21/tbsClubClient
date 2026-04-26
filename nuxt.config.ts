@@ -2,13 +2,10 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   runtimeConfig: {
-    private: {
-      googleApiKey: process.env.GOOGLE_PRIVATE_KEY,
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    },
+    googleApiKey: process.env.GOOGLE_PRIVATE_KEY,
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
     public: {
       endpoint:process.env.GOOGLE_API_ENDPOINT,
-      
     }
   },
   modules: [

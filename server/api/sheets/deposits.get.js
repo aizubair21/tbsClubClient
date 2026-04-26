@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const range = query.range || 'Transactions!A:L' // Allow dynamic range
 
-  const url = `${config.public.endpoint}/${config.private.spreadsheetId}/values/${range}?key=${config.private.googleApiKey}`
+  const url = `${config.public.endpoint}/${config.spreadsheetId}/values/${range}?key=${config.googleApiKey}`
 
   try {
     const response = await $fetch(url)
