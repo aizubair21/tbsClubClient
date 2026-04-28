@@ -28,6 +28,18 @@ export const useDataStore = defineStore('data', () => {
         ]
     );
 
+    const INDEX = {
+      user_id: 0,
+      session: 1,
+      amount: 2,
+      type: 3,
+      month: 4,
+      method: 5,
+      pay_to: 6,
+      send_from: 7,
+      date: 10
+    };
+
     const types = ref(['Monthly', 'Yearly', 'Cost']);
     const methods = ref(['Bkash', 'Nogod', 'Cash', 'Bank']);
     const deposits = ref([]);
@@ -35,9 +47,6 @@ export const useDataStore = defineStore('data', () => {
     const refreshDeposits = async (userId) => 
     {
         return await $fetch('/api/sheets/deposits');
-        return await data.filter((d) => {
-            d[2] == 200;
-        });
     }
 
     const resetDeposits = () => 

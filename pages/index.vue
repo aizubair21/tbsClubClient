@@ -253,7 +253,6 @@ onBeforeMount(() => {
 <template>
   <div v-if="deposits.length > 0" class="space-y-6">
   
-
     <!-- Header -->
     <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
       <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -394,6 +393,30 @@ onBeforeMount(() => {
       </div>
     </div>
 
+    <div class="bg-white rounded-2xl p-6 shadow-xl">
+      <h3 class="text-lg font-bold text-gray-800 mb-3">মূল্যবান পরামর্শ</h3>
+      <div class="space-y-3">
+        <div class="flex items-start space-x-2 p-2 bg-yellow-50 rounded-lg">
+          <i class="fas fa-lightbulb text-yellow-500 mt-0.5"></i>
+          <p class="text-sm text-gray-700">
+            গত মাসের তুলনায় গ্রোথ {{ growthRate > 0 ? 'বেড়েছে' : 'কমেছে' }} 
+            {{ Math.abs(growthRate).toFixed(1) }}%
+          </p>
+        </div>
+        <div v-if="activeMembers < totalUser" class="flex items-start space-x-2 p-2 bg-red-50 rounded-lg">
+          <i class="fas fa-exclamation-triangle text-red-500 mt-0.5"></i>
+          <p class="text-sm text-gray-700">
+            {{ totalUser - activeMembers }} জন সদস্য গত ৩ মাসে সক্রিয় নন
+          </p>
+        </div>
+        <div class="flex items-start space-x-2 p-2 bg-green-50 rounded-lg">
+          <i class="fas fa-chart-line text-green-500 mt-0.5"></i>
+          <p class="text-sm text-gray-700">
+            দৈনিক গড় সংগ্রহ: ৳{{ dailyAverage.toLocaleString() }}
+          </p>
+        </div>
+      </div>
+    </div>
 
     <!-- Admin Section -->
     <div v-if="auth.isAdmin">

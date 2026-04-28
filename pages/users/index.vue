@@ -72,9 +72,9 @@ const fetchMembers = async () => {
   isLoading.value = true
   try {
     members.value = await $fetch('/api/sheets/users')  
-    console.log('Fetched members:', members.value)
+    //console.log('Fetched members:', members.value)
   } catch (error) {
-    console.error('Error fetching members:', error)
+    //console.error('Error fetching members:', error)
   } finally {
     isLoading.value = false
   }
@@ -140,7 +140,7 @@ onMounted(fetchMembers)
               v-model="searchQuery" 
               type="text" 
               placeholder="নাম, ইমেইল বা আইডি দ্বারা অনুসন্ধান..."
-              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200"
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200"
             />
             <i class="fas fa-search absolute left-3 top-4 text-gray-400"></i>
             <button 
@@ -160,7 +160,7 @@ onMounted(fetchMembers)
         <!-- Role Filter -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">
-            <i class="fas fa-filter mr-2"></i> ভূমিকা ফিল্টার
+            <i class="fas fa-filter mr-2"></i> ফিল্টার
           </label>
           <div class="flex gap-2">
             <button 
@@ -253,13 +253,13 @@ onMounted(fetchMembers)
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                     <div class="flex items-center text-gray-600">
                       <i class="fas fa-id-card w-5 text-purple-500"></i>
-                      <span class="ml-2">আইডি: TBU-{{ member[USER_INDEX.user_id_display] }}</span>
+                      <span class="ml-2">আইডি: TBU{{ member[USER_INDEX.user_id_display] }}</span>
                     </div>
-                    <div class="flex items-center text-gray-600">
+                    <div v-if="auth.userId == member[USER_INDEX.user_id_display] || auth.isAdmin" class="flex items-center text-gray-600">
                       <i class="fas fa-envelope w-5 text-purple-500"></i>
                       <span class="ml-2">{{ member[USER_INDEX.email] || 'ইমেইল নেই' }}</span>
                     </div>
-                    <div class="flex items-center text-gray-600">
+                    <div v-if="auth.userId == member[USER_INDEX.user_id_display] || auth.isAdmin" class="flex items-center text-gray-600">
                       <i class="fas fa-phone w-5 text-purple-500"></i>
                       <span class="ml-2">{{ member[USER_INDEX.phone_number] || 'ফোন নেই' }}</span>
                     </div>
