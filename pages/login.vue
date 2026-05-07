@@ -6,6 +6,10 @@ const error = ref('')
 const isModelOpen = ref(0)
 const config = useRuntimeConfig();
 
+if (auth.isAuthenticated) {
+  await navigateTo('/')
+}
+
 
 definePageMeta({
   layout:false,  
@@ -24,7 +28,7 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 relative overflow-hidden">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 relative overflow-hidden p-2">
    
     <div class="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-2xl p-10 w-full max-w-md relative z-10 transform transition-transform duration-300">
       <div class="text-center mb-6">

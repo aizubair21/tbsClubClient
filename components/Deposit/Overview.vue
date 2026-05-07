@@ -10,36 +10,22 @@ const props = defineProps({
 
 const auth = useAuthStore();
 
-// Index mapping based on Google Sheets data structure
-const INDEX = {
-  user_id: 0,
-  session: 1,
-  amount: 2,
-  type: 3,
-  month: 4,
-  method: 5,
-  pay_to: 6,
-  send_from: 7,
-  date: 10
-}
-
-
 const getAmount = (deposit) => {
-  return parseFloat(deposit[INDEX.amount]) || 0
+  return parseFloat(deposit.amount) || 0
 }
 // Helper function to get type from indexed array
 const getType = (deposit) => {
-  return deposit[INDEX.type] || ''
+  return deposit.type || ''
 }
 
 // Helper function to get month from indexed array
 const getMonth = (deposit) => {
-  return deposit[INDEX.month] || ''
+  return deposit.month || ''
 }
 
 // Helper function to get session from indexed array
 const getSession = (deposit) => {
-  return deposit[INDEX.session] || ''
+  return deposit.session || ''
 }
 
 const totalDeposit = computed(() => {

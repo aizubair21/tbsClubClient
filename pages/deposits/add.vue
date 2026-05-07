@@ -11,7 +11,7 @@ const deposits = ref([])
 const editing = ref(null)
 const users = ref([])
 const form = reactive({
-  member_code: '',
+  user_id: '',
   amount: 0,
   type: '',
   session: '',
@@ -25,19 +25,16 @@ const form = reactive({
 })
 
 const fetchDeposits = async () => {
-  deposits.value = await $fetch('https://tbs-vercel.vercel.app/deposits', {
-    headers: { Authorization: `Bearer ${auth.token}` }
-  })
+  deposits.value = await $fetch('/api/crud/Transactions')
 }
 
 const fetchUsers = async () => {
-  users.value = await $fetch('/api/users')
+  users.value = await $fetch('/api/crud/Users')
 }
 
 const addDeposit = async () => {
-  await $fetch('https://tbs-vercel.vercel.app/deposits', {
+  await $fetch('/api/crud/Transactions', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${auth.token}` },
     body: { ...form, created_at: new Date().toISOString() }
   })
   navigateTo('/deposits')
@@ -49,9 +46,8 @@ const editDeposit = (deposit) => {
 }
 
 const updateDeposit = async () => {
-  await $fetch(`https://tbs-vercel.vercel.app/deposits/${editing.value}`, {
+  await $fetch(`/api/crud/Transactions?id=${editing.value}`, {
     method: 'PUT',
-    headers: { Authorization: `Bearer ${auth.token}` },
     body: form
   })
   editing.value = null
@@ -60,15 +56,14 @@ const updateDeposit = async () => {
 }
 
 const deleteDeposit = async (id) => {
-  await $fetch(`https://tbs-vercel.vercel.app/deposits/${id}`, {
+  await $fetch(`/api/crud/Transactions?id=${id}`, {
     method: 'DELETE',
-    headers: { Authorization: `Bearer ${auth.token}` }
   })
   await fetchDeposits()
 }
 
 const resetForm = () => {
-  form.member_code = ''
+  form.user_id = ''
   form.amount = 0
   form.type = ''
   form.session = ''
@@ -92,7 +87,7 @@ onMounted(async () => {
     <h1 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">আমানত যুক্ত করুন</h1>
     <form @submit.prevent="addDeposit()" class="space-y-4 mb-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <select v-model="form.member_code" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
+        <select v-model="form.user_id" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Member</option>
           <option v-for="user in users" :key="user.id" :value="user.id">
              {{ user.id }} - {{ user.name }} - {{ user.phone }}

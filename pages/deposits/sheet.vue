@@ -141,7 +141,7 @@ const fetchDeposits = async () => {
   error.value = null
   
   try {
-    const response = await $fetch('/api/sheets/deposits')
+    const response = await $fetch('/api/crud/Transactions')
     deposits.value = response
     
     // Populate filter options

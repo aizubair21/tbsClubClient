@@ -72,15 +72,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+  <div class="min-h-screen  flex bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
     <!-- Mobile backdrop -->
     <div v-if="isAsideOpen" @click="isAsideOpen = false" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"></div>
 
     <!-- Aside (Sidebar) - Sticky on desktop -->
     <aside 
       class="w-64 bg-gray-800 lg:opacity-70 text-white fixed md:sticky top-0 inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:block h-screen overflow-y-auto"
-      :class="{ 'translate-x-0': isAsideOpen }"
-    >
+      :class="{ 'translate-x-0': isAsideOpen }">
       <div class="p-4">
         <div class="text-center mb-6">
           <Logo />

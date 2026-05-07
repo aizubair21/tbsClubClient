@@ -6,27 +6,14 @@ if (!auth.isAuthenticated && !auth.isAdmin) {
   await navigateTo('/users')
 }
 
-// Index mapping based on Google Sheets data structure
-const INDEX = {
-  user_id: 0,
-  session: 1,
-  amount: 2,
-  type: 3,
-  month: 4,
-  method: 5,
-  pay_to: 6,
-  send_from: 7,
-  date: 10
-}
-
 const deposits = ref([]);
 const users = ref([]);
 const members = ref([]);
 
 const getData = async () => {
   try {
-    users.value = await $fetch('/api/sheets/users')
-    deposits.value = await $fetch('/api/sheets/deposits');
+    users.value = await $fetch('/api/crud/Users')
+    deposits.value = await $fetch('/api/crud/Transactions');
     //console.log('Deposits data:', deposits.value);
     //console.log('Users data:', users.value);
     auth.isLoading = false;
@@ -38,22 +25,22 @@ const getData = async () => {
 
 // Helper function to safely get amount from indexed array
 const getAmount = (deposit) => {
-  return parseFloat(deposit[INDEX.amount]) || 0
+  return parseFloat(deposit.amount) || 0
 }
 
 // Helper function to get type from indexed array
 const getType = (deposit) => {
-  return deposit[INDEX.type] || ''
+  return deposit.type || ''
 }
 
 // Helper function to get month from indexed array
 const getMonth = (deposit) => {
-  return deposit[INDEX.month] || ''
+  return deposit.month || ''
 }
 
 // Helper function to get session from indexed array
 const getSession = (deposit) => {
-  return deposit[INDEX.session] || ''
+  return deposit.session || ''
 }
 
 // Computed properties with proper indexed access
@@ -108,7 +95,7 @@ const currentSessionDeposit = computed(() => {
 // Get user-specific deposits for non-admin users
 const userDeposits = computed(() => {
   if (!auth.isAdmin && auth.userId) {
-    return deposits.value?.filter(d => d[INDEX.user_id] === auth.userId) || []
+    return deposits.value?.filter(d => d.user_id === auth.userId) || []
   }
   return []
 })
@@ -125,7 +112,7 @@ const monthlyTrends = computed(() => {
   const trends = {}
   
   deposits.value.forEach(deposit => {
-    const month = deposit[INDEX.month]
+    const month = deposit.month
     const amount = getAmount(deposit)
     if (!trends[month]) trends[month] = 0
     trends[month] += amount
@@ -141,7 +128,7 @@ const topContributors = computed(() => {
   const contributions = {}
   
   deposits.value.forEach(deposit => {
-    const userId = deposit[INDEX.user_id]
+    const userId = deposit.user_id
     const amount = getAmount(deposit)
     if (!contributions[userId]) contributions[userId] = 0
     contributions[userId] += amount
@@ -165,7 +152,7 @@ const paymentMethodStats = computed(() => {
   const methods = {}
   
   deposits.value.forEach(deposit => {
-    const method = deposit[INDEX.method]
+    const method = deposit.method
     const amount = getAmount(deposit)
     if (!methods[method]) methods[method] = 0
     methods[method] += amount
@@ -220,8 +207,8 @@ const activeMembers = computed(() => {
   
   const activeUserIds = new Set()
   deposits.value.forEach(deposit => {
-    if (last3MonthNames.includes(deposit[INDEX.month])) {
-      activeUserIds.add(deposit[INDEX.user_id])
+    if (last3MonthNames.includes(deposit.month)) {
+      activeUserIds.add(deposit.user_id)
     }
   })
   
@@ -232,7 +219,7 @@ const activeMembers = computed(() => {
 const dailyAverage = computed(() => {
   const depositsByDate = {}
   deposits.value.forEach(deposit => {
-    const date = deposit[INDEX.date]
+    const date = deposit.date
     if (date) {
       if (!depositsByDate[date]) depositsByDate[date] = 0
       depositsByDate[date] += getAmount(deposit)
@@ -251,7 +238,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div v-if="deposits.length > 0" class="space-y-6">
+  <div class="space-y-6">
   
     <!-- Header -->
     <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
@@ -433,16 +420,16 @@ onBeforeMount(() => {
                   {{ index + 1 }}
                 </div>
                 <div>
-                  <p class="font-medium text-gray-900">{{ member[1] || 'নাম নেই' }}</p>
-                  <p class="text-sm text-gray-500">আইডি: {{ member[16] }}</p>
+                  <p class="font-medium text-gray-900">{{ member.name_bangla || 'নাম নেই' }}</p>
+                  <p class="text-sm text-gray-500">আইডি: {{ member.user_id }}</p>
                 </div>
               </div>
               <div class="flex space-x-2">
-                <NuxtLink v-if="auth.isAdmin" :to="`/users/${member[16]}`" 
+                <NuxtLink v-if="auth.isAdmin" :to="`/users/${member.user_id}`" 
                           class="bg-blue-500 text-white rounded-lg p-2 hover:bg-blue-600 transition-colors shadow-md">
                   <i class="fas fa-edit"></i>
                 </NuxtLink>
-                <NuxtLink :to="`/users/view/${member[16]}`" 
+                <NuxtLink :to="`/users/view/${member.user_id}`" 
                           class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-2 hover:from-purple-600 hover:to-pink-600 transition-colors shadow-md">
                   <i class="fas fa-angle-right"></i>
                 </NuxtLink>
@@ -471,8 +458,8 @@ onBeforeMount(() => {
             <div v-for="(deposit, index) in userDeposits.slice(-3).reverse()" :key="index" 
                  class="flex justify-between items-center border-b pb-2">
               <div>
-                <p class="text-sm text-gray-600">{{ deposit[INDEX.month] }} {{ deposit[INDEX.session] }}</p>
-                <p class="text-xs text-gray-400">{{ deposit[INDEX.type] }}</p>
+                <p class="text-sm text-gray-600">{{ deposit.month }} {{ deposit.session }}</p>
+                <p class="text-xs text-gray-400">{{ deposit.type }}</p>
               </div>
               <p class="font-semibold text-green-600">৳{{ getAmount(deposit).toLocaleString() }}</p>
             </div>
@@ -486,15 +473,15 @@ onBeforeMount(() => {
   </div>
 
   <!-- Loading State -->
-  <div v-else-if="auth.isLoading" class="flex justify-center items-center h-96">
+ <!--  <div v-else-if="auth.isLoading" class="flex justify-center items-center h-96">
     <div class="text-center">
       <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mx-auto"></div>
       <p class="mt-4 text-gray-500">লোড হচ্ছে...</p>
     </div>
-  </div>
+  </div> -->
 
   <!-- Empty State -->
-  <div v-else class="bg-white rounded-2xl p-12 shadow-2xl text-center">
+  <div v-if="deposits.length < 1" class="bg-white rounded-2xl p-12 shadow-2xl text-center">
     <i class="fas fa-database text-6xl text-gray-300 mb-4"></i>
     <p class="text-gray-500 text-lg">কোনো তথ্য পাওয়া যায়নি</p>
     <p class="text-gray-400 text-sm mt-2">দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন</p>

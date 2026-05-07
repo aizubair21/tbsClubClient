@@ -1,34 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 
-interface User {
-  id: number
-  name: string
-  username: string
-  email: string
-  father_name: string
-  mother_name: string
-  nid: string
-  address: string
-  role: string
-  phone: string
-}
-
-interface Deposit {
-  id: number
-  member_code: number
-  amount: number
-  type: string
-  session: string
-  month: string
-  method: string
-  pay_to: string
-  send_number: string
-  receive_number: string
-  date: string
-  trx_id: string
-}
-
 const auth = useAuthStore()
 const dt = useDataStore()
 const route = useRoute()
@@ -37,6 +9,7 @@ const id = parseInt(route.params.id as string)
 if (!auth.isAuthenticated) {
   await navigateTo('/login')
 }
+
 const now = new Date();
 const user = ref<User>({} as User)
 const deposits = ref<Deposit[]>([])
@@ -44,11 +17,11 @@ const sessionFilter = ref('')
 const monthFilter = ref('')
 
 const fetchUser = async () => {
-  user.value = await $fetch<User>(`/api/users/${id}`)
+  user.value = await $fetch<User>(`/api/crud/Users?id=${id}`, {method:'PUT'})
 }
 
 const fetchDeposits = async () => {
-  const allDeposits = await $fetch<Deposit[]>('/api/deposits', {
+  const allDeposits = await $fetch<Deposit[]>('/api/crud/Transactions', {
     headers: { Authorization: `Bearer ${auth.token}`, 'x-user-id': auth.userId || '' }
   })
   deposits.value = allDeposits.filter(d => d.member_code == id)

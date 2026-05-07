@@ -2,7 +2,7 @@
 const auth = useAuthStore();
 const data = useDataStore()
 
-if (!auth.isAuthenticated) {
+if (!auth.isAuthenticated || !auth.isAdmin) {
   await navigateTo('/login')
 }
 
@@ -15,11 +15,11 @@ const fetchDeposits = async () => {
   error.value = null
   
   try {
-    const response = await $fetch('/api/sheets/deposits')
+    const response = await $fetch('/api/crud/Transactions')
     deposits.value = response
     
     // Populate filter options
-    updateFilterOptions()
+    //updateFilterOptions()
 
   } catch (err) {
     error.value = err.message || 'Failed to fetch data from Google Sheets'
@@ -48,7 +48,7 @@ onMounted(() => {
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
 		<!-- Quick Action: অবদান (Contribution) -->
 		<NuxtLink 
-			to="/deposits/new" 
+			to="/deposits/contributions" 
 			class="group bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
 		>
 			<div class="flex items-center justify-between mb-3">
@@ -86,7 +86,7 @@ onMounted(() => {
 		</NuxtLink>
 
 		<!-- Quick Action: সদস্য তালিকা (Member List) -->
-		<NuxtLink 
+		<!-- <NuxtLink 
 			to="/users" 
 			class="group bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
 		>
@@ -96,7 +96,7 @@ onMounted(() => {
 			</div>
 			<h3 class="text-xl font-bold mb-1">সদস্য তালিকা</h3>
 			<p class="text-sm opacity-90">সকল সদস্য দেখুন</p>
-		</NuxtLink>
+		</NuxtLink> -->
 
 		<!-- Quick Action: বার্ষিক রিপোর্ট (Yearly Report) -->
 		<NuxtLink 
@@ -138,7 +138,7 @@ onMounted(() => {
 		</NuxtLink>
 
 		<!-- Quick Action: সেটিংস (Settings) - Admin only -->
-		<NuxtLink 
+		<!-- <NuxtLink 
 			v-if="auth.isAdmin"
 			to="/settings" 
 			class="group bg-gradient-to-br from-gray-600 to-gray-800 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
@@ -149,7 +149,7 @@ onMounted(() => {
 			</div>
 			<h3 class="text-xl font-bold mb-1">সেটিংস</h3>
 			<p class="text-sm opacity-90">সিস্টেম সেটিংস</p>
-		</NuxtLink>
+		</NuxtLink> -->
 	</div>
 
 	<!-- Alternative: Compact Button Style (Optional) -->

@@ -1,13 +1,16 @@
-# Google Sheets Login Update - COMPLETED
+# Task Progress: Create pages/deposits/contributions.vue
 
-✅ Login fetches users from `/api/sheets/users` (Google Sheets)  
-✅ Phone-only matching at sheet column 12  
-✅ Pinia store persists auth state  
-✅ UI in `/login` works  
-✅ Sheet data handling follows pattern in `/sheet.vue`  
+## Plan Breakdown
+- [x] Understand requirements and data structure
+- [x] Analyze dependent files (auth store, APIs)
+- [x] Confirm plan with user
+- [ ] Create TODO.md
+- [x] Implement page logic (script setup)
+- [x] Build UI components (filters, table, stats)
+- [x] Style with Tailwind (match dashboard)
+- [x] Test filters/sorting
+- [x] Update TODO.md
+- [x] Complete task
 
-**Next steps (future):** Add password security when ready.
-
-## Other TODOs
-<!-- Add more if needed -->
+Current: Ready to implement page.
 

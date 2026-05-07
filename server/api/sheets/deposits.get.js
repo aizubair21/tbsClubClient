@@ -16,7 +16,6 @@
 // })
 
 
-// server/api/sheets.get.ts
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const query = getQuery(event)

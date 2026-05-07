@@ -8,22 +8,6 @@ if (!auth.isAuthenticated) {
   await navigateTo('/login')
 }
 
-// Index mapping for user data
-const USER_INDEX = {
-  user_id: 0,
-  name_bangla: 1,
-  name_english: 2,
-  father_name: 3,
-  mother_name: 4,
-  educational_qualification: 6,
-  occupation: 7,
-  phone_number: 11,
-  email: 12,
-  present_address: 13,
-  user_id_display: 16, // TBU-XXXX format ID
-  role: 17 // 'admin' or 'user'
-}
-
 const members = ref([])
 const searchQuery = ref('')
 const selectedRole = ref('all') // 'all', 'admin', 'user'
@@ -35,7 +19,7 @@ const filteredMembers = computed(() => {
   
   // Filter by role
   if (selectedRole.value !== 'all') {
-    filtered = filtered.filter(member => member[USER_INDEX.role] === selectedRole.value)
+    filtered = filtered.filter(member => member.role === selectedRole.value)
   }
   
   // Filter by search query (name, email, or user_id)
@@ -43,11 +27,11 @@ const filteredMembers = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
     filtered = filtered.filter(member => {
       return (
-        member[USER_INDEX.name_bangla]?.toLowerCase().includes(query) ||
-        member[USER_INDEX.name_english]?.toLowerCase().includes(query) ||
-        member[USER_INDEX.email]?.toLowerCase().includes(query) ||
-        member[USER_INDEX.user_id_display]?.toString().toLowerCase().includes(query) ||
-        member[USER_INDEX.user_id]?.toString().toLowerCase().includes(query)
+        member.name_bangla?.toLowerCase().includes(query) ||
+        member.name_english?.toLowerCase().includes(query) ||
+        member.email?.toLowerCase().includes(query) ||
+        member.user_id?.toString().toLowerCase().includes(query) ||
+        member.user_id?.toString().toLowerCase().includes(query)
       )
     })
   }
@@ -57,8 +41,8 @@ const filteredMembers = computed(() => {
 
 // Statistics
 const stats = computed(() => {
-  const totalAdmins = members.value.filter(m => m[USER_INDEX.role] === 'admin').length
-  const totalUsers = members.value.filter(m => m[USER_INDEX.role] === 'user').length
+  const totalAdmins = members.value.filter(m => m.role=== 'admin').length
+  const totalUsers = members.value.filter(m => m.role === 'user').length
   
   return {
     total: members.value.length,
@@ -71,8 +55,8 @@ const stats = computed(() => {
 const fetchMembers = async () => {
   isLoading.value = true
   try {
-    members.value = await $fetch('/api/sheets/users')  
-    //console.log('Fetched members:', members.value)
+    members.value = await $fetch('/api/crud/Users')  
+    // console.log('Fetched members:', members.value)
   } catch (error) {
     //console.error('Error fetching members:', error)
   } finally {
@@ -84,7 +68,7 @@ const deleteMember = async (id) => {
   if (!confirm('আপনি কি এই সদস্যকে মুছে ফেলতে চান?')) return
   
   try {
-    await $fetch(`/api/sheets/users/${id}`, {
+    await $fetch(`/api/curd/Users?id=${id}`, {
       method: 'DELETE'
     })
     await fetchMembers()
@@ -117,13 +101,15 @@ onMounted(fetchMembers)
           </h1>
           <p class="text-sm text-gray-500 mt-1">মোট সদস্য: {{ stats.total }} জন</p>
         </div>
+
         <NuxtLink 
           v-if="auth.isAdmin" 
           to="/members/add" 
           class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-3 px-6 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg inline-block"
         >
           <i class="fas fa-plus mr-2"></i> যুক্ত করুন
-        </NuxtLink>
+        </NuxtLink> 
+
       </div>
     </div>
 
@@ -225,7 +211,7 @@ onMounted(fetchMembers)
       </div>
 
       <div v-else class="divide-y divide-gray-200">
-        <div v-for="(member, index) in filteredMembers" :key="member[USER_INDEX.user_id]" 
+        <div v-for="(member, index) in filteredMembers" :key="member.user_id" 
              class="p-4 hover:bg-gray-50 transition-colors">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <!-- Member Info -->
@@ -233,39 +219,39 @@ onMounted(fetchMembers)
               <div class="flex items-start gap-3">
                 <!-- Avatar -->
                 <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                  {{ member[USER_INDEX.name_bangla]?.charAt(0) || '?' }}
+                  {{ member.name_bangla?.charAt(0) || '?' }}
                 </div>
                 
                 <!-- Details -->
                 <div class="flex-1">
                   <div class="flex flex-wrap items-center gap-2 mb-1">
                     <h3 class="text-lg font-semibold text-gray-900">
-                      {{ member[USER_INDEX.name_bangla] || 'নাম নেই' }}
+                      {{ member.name_bangla || 'নাম নেই' }}
                     </h3>
                     <span class="text-sm text-gray-500">
-                      ({{ member[USER_INDEX.name_english] || 'N/A' }})
+                      ({{ member.name_english || 'N/A' }})
                     </span>
-                    <span :class="['px-2 py-1 rounded-full text-xs font-medium', getRoleBadgeClass(member[USER_INDEX.role])]">
-                      {{ getRoleText(member[USER_INDEX.role]) }}
+                    <span :class="['px-2 py-1 rounded-full text-xs font-medium', getRoleBadgeClass(member.role)]">
+                      {{ getRoleText(member.role) }}
                     </span>
                   </div>
                   
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                     <div class="flex items-center text-gray-600">
                       <i class="fas fa-id-card w-5 text-purple-500"></i>
-                      <span class="ml-2">আইডি: TBU{{ member[USER_INDEX.user_id_display] }}</span>
+                      <span class="ml-2">আইডি: TBU-{{ member.user_id}}</span>
                     </div>
-                    <div v-if="auth.userId == member[USER_INDEX.user_id_display] || auth.isAdmin" class="flex items-center text-gray-600">
+                    <div v-if="auth.userId == member.user_id || auth.isAdmin" class="flex items-center text-gray-600">
                       <i class="fas fa-envelope w-5 text-purple-500"></i>
-                      <span class="ml-2">{{ member[USER_INDEX.email] || 'ইমেইল নেই' }}</span>
+                      <span class="ml-2">{{ member.email || 'ইমেইল নেই' }}</span>
                     </div>
-                    <div v-if="auth.userId == member[USER_INDEX.user_id_display] || auth.isAdmin" class="flex items-center text-gray-600">
+                    <div v-if="auth.userId == member.user_id || auth.isAdmin" class="flex items-center text-gray-600">
                       <i class="fas fa-phone w-5 text-purple-500"></i>
-                      <span class="ml-2">{{ member[USER_INDEX.phone_number] || 'ফোন নেই' }}</span>
+                      <span class="ml-2">{{ member.phone_number || 'ফোন নেই' }}</span>
                     </div>
                     <div class="flex items-center text-gray-600">
                       <i class="fas fa-briefcase w-5 text-purple-500"></i>
-                      <span class="ml-2">{{ member[USER_INDEX.occupation] || 'পেশা নেই' }}</span>
+                      <span class="ml-2">{{ member.occupation || 'পেশা নেই' }}</span>
                     </div>
                   </div>
                   
@@ -276,10 +262,10 @@ onMounted(fetchMembers)
                         <i class="fas fa-info-circle mr-1"></i> আরও তথ্য
                       </summary>
                       <div class="mt-2 space-y-1 pl-4">
-                        <p><span class="font-medium">পিতার নাম:</span> {{ member[USER_INDEX.father_name] || 'N/A' }}</p>
-                        <p><span class="font-medium">মাতার নাম:</span> {{ member[USER_INDEX.mother_name] || 'N/A' }}</p>
-                        <p><span class="font-medium">শিক্ষাগত যোগ্যতা:</span> {{ member[USER_INDEX.educational_qualification] || 'N/A' }}</p>
-                        <p><span class="font-medium">ঠিকানা:</span> {{ member[USER_INDEX.present_address] || 'N/A' }}</p>
+                        <p><span class="font-medium">পিতার নাম:</span> {{ member.father_name || 'N/A' }}</p>
+                        <p><span class="font-medium">মাতার নাম:</span> {{ member.mother_name || 'N/A' }}</p>
+                        <p><span class="font-medium">শিক্ষাগত যোগ্যতা:</span> {{ member.educational_qualification || 'N/A' }}</p>
+                        <p><span class="font-medium">ঠিকানা:</span> {{ member.permanent_address || 'N/A' }}</p>
                       </div>
                     </details>
                   </div>
@@ -290,8 +276,8 @@ onMounted(fetchMembers)
             <!-- Action Buttons -->
             <div class="flex space-x-2 justify-end">
               <NuxtLink 
-                v-if="auth.isAdmin || auth.userId == member[USER_INDEX.user_id_display]"
-                :to="`/users/${member[USER_INDEX.user_id_display]}`" 
+                v-if="auth.isAdmin || auth.userId == member.user_id"
+                :to="`/users/${member.user_id}`" 
                 class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-2 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
                 title="বিস্তারিত দেখুন"
               >
@@ -308,8 +294,8 @@ onMounted(fetchMembers)
               </NuxtLink> -->
               
               <button 
-                v-if="auth.isAdmin && member[USER_INDEX.role] !== 'admin'" 
-                @click="deleteMember(member[USER_INDEX.user_id])" 
+                v-if="auth.isAdmin && member.role !== 'admin'" 
+                @click="deleteMember(member.user_id)" 
                 class="bg-red-500 text-white rounded-lg p-2 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
                 title="ডিলিট করুন"
               >
@@ -338,6 +324,7 @@ onMounted(fetchMembers)
         </div>
       </div>
     </div>
+    
   </div>
 </template>
 

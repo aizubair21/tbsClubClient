@@ -1,39 +1,11 @@
 <script setup>
 const route = useRoute()
 const auth = useAuthStore()
+const data = useDataStore()
 const isLoading = ref(true)
-const user = ref(null)
+const user = ref([])
 const deposits = ref([])
 const selectedSession = ref('')
-
-// Index mapping for user data
-const USER_INDEX = {
-  user_id: 0,
-  name_bangla: 1,
-  name_english: 2,
-  father_name: 3,
-  mother_name: 4,
-  educational_qualification: 6,
-  occupation: 7,
-  phone_number: 11,
-  email: 12,
-  present_address: 13,
-  user_id_display: 16,
-  role: 17
-}
-
-// Index mapping for deposit data
-const DEPOSIT_INDEX = {
-  user_id: 0,
-  session: 1,
-  amount: 2,
-  type: 3,
-  month: 4,
-  method: 5,
-  pay_to: 6,
-  send_from: 7,
-  date: 10
-}
 
 // Months in Bengali
 const months = [
@@ -41,6 +13,9 @@ const months = [
   'July', 'August'
 ]
 
+if (!auth.isAuthenticated || (auth.userId != route.params.id && !auth.isAdmin) ) {
+  await navigateTo('/login')
+}
 
 
 // Available sessions (you can adjust based on your data)
@@ -50,8 +25,8 @@ const sessions = ref([])
 const fetchUser = async () => {
   try {
     const userId = route.params.id
-    const users = await $fetch('/api/sheets/users')
-    user.value = users.find(u => u[USER_INDEX.user_id_display] === userId)
+    const users = await $fetch('/api/crud/Users')
+    user.value = users.find(u => u.user_id === userId)
     
     if (!user.value) {
       throw new Error('User not found')
@@ -64,14 +39,14 @@ const fetchUser = async () => {
 // Fetch deposits
 const fetchDeposits = async () => {
   try {
-    const allDeposits = await $fetch('/api/sheets/deposits')
-    const userId = user.value[USER_INDEX.user_id_display]
+    const allDeposits = await $fetch('/api/crud/Transactions')
+    const userId = user.value.user_id
     
     // Filter deposits for this user
-    deposits.value = allDeposits.filter(d => d[DEPOSIT_INDEX.user_id] === userId)
+    deposits.value = allDeposits.filter(d => d.user_id === userId)
     
     // Extract unique sessions
-    const uniqueSessions = [...new Set(deposits.value.map(d => d[DEPOSIT_INDEX.session]))]
+    const uniqueSessions = [...new Set(deposits.value.map(d => d.session))]
     //console.log(deposits.value);
     sessions.value = uniqueSessions.sort()
     
@@ -87,15 +62,15 @@ const fetchDeposits = async () => {
 // Get user's deposits for selected session
 const sessionDeposits = computed(() => {
   if (!selectedSession.value) return []
-  return deposits.value.filter(d => d[DEPOSIT_INDEX.session] === selectedSession.value)
+  return deposits.value.filter(d => d.session === selectedSession.value)
 })
 
 // Create a map of paid months for the selected session
 const paidMonthsMap = computed(() => {
   const map = {}
   sessionDeposits.value.forEach(deposit => {
-    const month = deposit[DEPOSIT_INDEX.month]
-    const amount = parseFloat(deposit[DEPOSIT_INDEX.amount]) || 0
+    const month = deposit.month
+    const amount = parseFloat(deposit.amount) || 0
     if (!map[month]) {
       map[month] = { total: 0, deposits: [] }
     }
@@ -126,25 +101,25 @@ const monthlyStatus = computed(() => {
 
 // Statistics
 const stats = computed(() => {
-  const totalPaid = sessionDeposits.value.reduce((sum, d) => sum + (parseFloat(d[DEPOSIT_INDEX.amount]) || 0), 0)
+  const totalPaid = sessionDeposits.value.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0)
   const totalMonths = monthlyStatus.value.length
-  console.log(monthlyStatus.value);
+  //console.log(monthlyStatus.value);
   const paidMonths = monthlyStatus.value.filter(m => m.isPaid).length
   const unpaidMonths = totalMonths - paidMonths
   const paymentRate = totalMonths > 0 ? (paidMonths / totalMonths) * 100 : 0
   
   // Calculate by type
   const monthlyTotal = sessionDeposits.value
-    .filter(d => d[DEPOSIT_INDEX.type] === 'Monthly')
-    .reduce((sum, d) => sum + (parseFloat(d[DEPOSIT_INDEX.amount]) || 0), 0)
+    .filter(d => d.type === 'Monthly')
+    .reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0)
   
   const yearlyTotal = sessionDeposits.value
-    .filter(d => d[DEPOSIT_INDEX.type] === 'Yearly')
-    .reduce((sum, d) => sum + (parseFloat(d[DEPOSIT_INDEX.amount]) || 0), 0)
+    .filter(d => d.type === 'Yearly')
+    .reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0)
   
   const costTotal = sessionDeposits.value
-    .filter(d => d[DEPOSIT_INDEX.type] === 'Maintainanc')
-    .reduce((sum, d) => sum + (parseFloat(d[DEPOSIT_INDEX.amount]) || 0), 0)
+    .filter(d => d.type === 'Maintainanc')
+    .reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0)
   
   return {
     totalPaid,
@@ -161,8 +136,8 @@ const stats = computed(() => {
 const paymentMethodBreakdown = computed(() => {
   const methods = {}
   sessionDeposits.value.forEach(deposit => {
-    const method = deposit[DEPOSIT_INDEX.method]
-    const amount = parseFloat(deposit[DEPOSIT_INDEX.amount]) || 0
+    const method = deposit.method
+    const amount = parseFloat(deposit.amount) || 0
     if (!methods[method]) {
       methods[method] = { total: 0, count: 0 }
     }
@@ -176,8 +151,8 @@ const paymentMethodBreakdown = computed(() => {
 const depositHistory = computed(() => {
   return [...sessionDeposits.value]
     .sort((a, b) => {
-      const dateA = a[DEPOSIT_INDEX.date] || ''
-      const dateB = b[DEPOSIT_INDEX.date] || ''
+      const dateA = a.date || ''
+      const dateB = b.date || ''
       return dateB.localeCompare(dateA)
     })
 })
@@ -193,7 +168,7 @@ const loadData = async () => {
 
 // Helper functions
 const getAmount = (deposit) => {
-  return parseFloat(deposit[DEPOSIT_INDEX.amount]) || 0
+  return parseFloat(deposit.amount) || 0
 }
 
 const formatDate = (dateString) => {
@@ -207,18 +182,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="isLoading" class="flex justify-center items-center h-96">
+<!--   <div v-if="isLoading" class="flex justify-center items-center h-96">
     <div class="text-center">
       <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500 mx-auto"></div>
       <p class="mt-4 text-gray-500">লোড হচ্ছে...</p>
     </div>
-  </div>
+  </div> -->
 
-  <div v-else-if="!user" class="bg-white rounded-2xl p-12 shadow-2xl text-center">
+  <div v-if="!user" class="bg-white rounded-2xl p-12 shadow-2xl text-center">
     <i class="fas fa-user-slash text-6xl text-gray-300 mb-4"></i>
     <p class="text-gray-500 text-lg">সদস্য পাওয়া যায়নি</p>
     <NuxtLink to="/users" class="mt-4 inline-block text-purple-600 hover:text-purple-700">
-      <i class="fas fa-arrow-left mr-2"></i> সদস্য列表中 ফিরে যান
+      <i class="fas fa-arrow-left mr-2"></i> সদস্য ফিরে যান
     </NuxtLink>
   </div>
 
@@ -228,44 +203,44 @@ onMounted(() => {
       <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
         <!-- Avatar -->
         <div class="w-24 h-24 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-4xl font-bold backdrop-blur-sm">
-          {{ user[USER_INDEX.name_bangla]?.charAt(0) || '?' }}
+          {{ user.name_bangla?.charAt(0) || '?' }}
         </div>
         
         <!-- User Info -->
         <div class="flex-1">
           <div class="flex flex-wrap items-center gap-3 mb-2">
-            <h1 class="text-2xl md:text-3xl font-bold">{{ user[USER_INDEX.name_bangla] }}</h1>
+            <h1 class="text-2xl md:text-3xl font-bold">{{ user.name_bangla }}</h1>
             <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">
-              {{ user[USER_INDEX.name_english] }}
+              {{ user.name_english }}
             </span>
             <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">
-              আইডি: TBU-{{ user[USER_INDEX.user_id_display] }}
+              আইডি: TBU-{{ user.user_id }}
             </span>
           </div>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div class="flex items-center">
               <i class="fas fa-envelope w-5"></i>
-              <span class="ml-2">{{ user[USER_INDEX.email] || 'ইমেইল নেই' }}</span>
+              <span class="ml-2">{{ user.email || 'ইমেইল নেই' }}</span>
             </div>
             <div class="flex items-center">
               <i class="fas fa-phone w-5"></i>
-              <span class="ml-2">{{ user[USER_INDEX.phone_number] || 'ফোন নেই' }}</span>
+              <span class="ml-2">{{ user.phone_number || 'ফোন নেই' }}</span>
             </div>
             <div class="flex items-center">
               <i class="fas fa-briefcase w-5"></i>
-              <span class="ml-2">{{ user[USER_INDEX.occupation] || 'পেশা নেই' }}</span>
+              <span class="ml-2">{{ user.occupation || 'পেশা নেই' }}</span>
             </div>
             <div class="flex items-center">
               <i class="fas fa-graduation-cap w-5"></i>
-              <span class="ml-2">{{ user[USER_INDEX.educational_qualification] || 'যোগ্যতা নেই' }}</span>
+              <span class="ml-2">{{ user.educational_qualification || 'যোগ্যতা নেই' }}</span>
             </div>
           </div>
         </div>
         
         <!-- Action Buttons -->
         <div class="flex gap-2">
-          <NuxtLink v-if="auth.isAdmin" :to="`/users/${user[USER_INDEX.user_id_display]}`" 
+          <NuxtLink v-if="auth.isAdmin" :to="`/users/${user.user_id}`" 
                     class="bg-white text-purple-600 rounded-lg px-4 py-2 hover:bg-opacity-90 transition-all">
             <i class="fas fa-edit mr-2"></i> এডিট
           </NuxtLink>
@@ -378,7 +353,7 @@ onMounted(() => {
             <button 
               v-if="auth.isAdmin"
               class="mt-2 text-xs bg-purple-600 text-white px-2 py-1 rounded hover:bg-purple-700 transition-colors w-full"
-              @click="$router.push(`/deposits/new?user=${user[USER_INDEX.user_id_display]}&month=${monthData.month}&session=${selectedSession}`)"
+              @click="$router.push(`/deposits/new?user=${user.user_id}&month=${monthData.month}&session=${selectedSession}`)"
             >
               <i class="fas fa-plus mr-1"></i> জমা দিন
             </button>
@@ -474,25 +449,25 @@ onMounted(() => {
           </thead>
           <tbody class="divide-y divide-gray-200">
             <tr v-for="(deposit, index) in depositHistory" :key="index" class="hover:bg-gray-50">
-              <td class="px-4 py-3 text-sm text-gray-900">{{ formatDate(deposit[DEPOSIT_INDEX.date]) }}</td>
-              <td class="px-4 py-3 text-sm text-gray-900">{{ deposit[DEPOSIT_INDEX.month] }}</td>
+              <td class="px-4 py-3 text-sm text-gray-900">{{ formatDate(deposit.date) }}</td>
+              <td class="px-4 py-3 text-sm text-gray-900">{{ deposit.month }}</td>
               <td class="px-4 py-3 text-sm">
                 <span :class="{
-                  'text-green-600': deposit[DEPOSIT_INDEX.type] === 'Monthly',
-                  'text-blue-600': deposit[DEPOSIT_INDEX.type] === 'Yearly',
-                  'text-red-600': deposit[DEPOSIT_INDEX.type] === 'Cost'
+                  'text-green-600': deposit.type === 'Monthly',
+                  'text-blue-600': deposit.type === 'Yearly',
+                  'text-red-600': deposit.type === 'Cost'
                 }" class="font-medium">
-                  {{ deposit[DEPOSIT_INDEX.type] }}
+                  {{ deposit.type }}
                 </span>
               </td>
               <td class="px-4 py-3 text-sm font-semibold text-green-600">৳{{ getAmount(deposit).toLocaleString() }}</td>
-              <td class="px-4 py-3 text-sm text-gray-600">{{ deposit[DEPOSIT_INDEX.method] || '-' }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ deposit.method || '-' }}</td>
               <td class="px-4 py-3 text-sm">
                 <details class="cursor-pointer">
                   <summary class="text-purple-600 text-xs">বিস্তারিত</summary>
                   <div class="mt-2 text-xs space-y-1">
-                    <p><span class="font-medium">প্রাপক:</span> {{ deposit[DEPOSIT_INDEX.pay_to] || '-' }}</p>
-                    <p><span class="font-medium">প্রেরক:</span> {{ deposit[DEPOSIT_INDEX.send_from] || '-' }}</p>
+                    <p><span class="font-medium">প্রাপক:</span> {{ deposit.pay_to || '-' }}</p>
+                    <p><span class="font-medium">প্রেরক:</span> {{ deposit.send_from || '-' }}</p>
                   </div>
                 </details>
               </td>
@@ -508,7 +483,7 @@ onMounted(() => {
       <p class="text-gray-500 text-lg">এই সেশনের জন্য কোনো আমানত নেই</p>
       <button 
         v-if="auth.isAdmin"
-        @click="$router.push(`/deposits/new?user=${user[USER_INDEX.user_id_display]}&session=${selectedSession}`)"
+        @click="$router.push(`/deposits/new?user=${user.user_id}&session=${selectedSession}`)"
         class="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl px-6 py-2 hover:from-purple-600 hover:to-pink-600 transition-all"
       >
         <i class="fas fa-plus mr-2"></i> প্রথম আমানত যোগ করুন
