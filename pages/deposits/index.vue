@@ -46,6 +46,19 @@ onMounted(() => {
 	<Seperator> দ্রুত পদক্ষেপ </Seperator>
 	
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+
+		<NuxtLink 
+			to="/deposits/add" 
+			class="group bg-gradient-to-br from-white-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+		>
+			<div class="flex items-center justify-between mb-3">
+				<i class="fas fa-plus text-3xl opacity-90"></i>
+				<i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1"></i>
+			</div>
+			<h3 class="text-xl font-bold mb-1"> যুক্ত করুন </h3>
+			<p class="text-sm opacity-90"> সদস্যদের আমানত যোগ করুন   </p>
+		</NuxtLink>
+
 		<!-- Quick Action: অবদান (Contribution) -->
 		<NuxtLink 
 			to="/deposits/contributions" 

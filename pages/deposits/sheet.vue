@@ -293,12 +293,20 @@ onMounted(() => {
           </h1>
           <p class="text-sm text-gray-500 mt-1">Connected to Google Sheets</p>
         </div>
-        <button 
-          @click="fetchDeposits" 
-          class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl py-3 px-6 hover:from-blue-600 hover:to-indigo-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg"
-        >
-          <i class="fas fa-sync-alt mr-2"></i>
-        </button>
+        
+        <div class="flex items-center justify-between gap-3">
+          <NuxtLink to="/deposits/add"
+          class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl py-3 px-6 hover:from-purple-600 hover:to-indigo-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg"
+          >
+            <i class="fas fa-plus mr-2"></i>
+          </NuxtLink>
+          <button 
+            @click="fetchDeposits" 
+            class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl py-3 px-6 hover:from-blue-600 hover:to-indigo-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg"
+          >
+            <i class="fas fa-sync-alt mr-2"></i>
+          </button>
+        </div>
       </div>
       
       <!-- Filter Bar -->

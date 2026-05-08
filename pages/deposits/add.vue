@@ -90,25 +90,25 @@ onMounted(async () => {
         <select v-model="form.user_id" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Member</option>
           <option v-for="user in users" :key="user.id" :value="user.id">
-             {{ user.id }} - {{ user.name }} - {{ user.phone }}
+             {{ user.user_id }} - {{ user.name_english }} - {{ user.phone_number }}
           </option>
         </select>
         <input v-model.number="form.amount" placeholder="Amount" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
         <select v-model="form.type" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Type</option>
-          <option v-for="type in data.typeArray" :value="type"> {{ type }} </option>
+          <option v-for="type in data.types" :value="type"> {{ type }} </option>
         </select>
         <select v-model="form.session" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Session</option>
-          <option v-for="session in data.sessionArray" :value="session"> {{ session }} </option>
+          <option v-for="session in data.sessions" :value="session"> {{ session }} </option>
         </select>
         <select v-model="form.month" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
           <option value="">Select Month</option>
-          <option v-for="month in data.monthArray" :value="month" > {{ month }} </option>
+          <option v-for="month in data.months" :value="month" > {{ month }} </option>
         </select> 
         <select v-model="form.method" required class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200">
-          <option value="">Select Month</option>
-          <option v-for="month in data.methodArray" :value="month" > {{ month }} </option>
+          <option value="">Select Methods</option>
+          <option v-for="month in data.methods" :value="month" > {{ month }} </option>
         </select> 
        
         <input v-model="form.pay_to" placeholder="Pay To" class="border-2 border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-200" />
