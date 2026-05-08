@@ -61,7 +61,7 @@ onMounted(() => {
 
 		<!-- Quick Action: ডিপজিত শিট (Deposit Sheet) -->
 		<NuxtLink 
-			to="/sheet" 
+			to="/deposits/sheet" 
 			class="group bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
 		>
 			<div class="flex items-center justify-between mb-3">

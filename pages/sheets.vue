@@ -141,7 +141,7 @@ const fetchDeposits = async () => {
   error.value = null
   
   try {
-    const response = await $fetch('/api/sheets/deposits')
+    const response = await $fetch('/api/crud/Transactions')
     deposits.value = response
     
     // Populate filter options
@@ -266,8 +266,8 @@ onMounted(() => {
       </div>
       
       <!-- Filter Bar -->
-      <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-gray-200">
-        <div class="flex items-center gap-3">
+      <div v-if='auth.isAdmin' class=" flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-gray-200">
+        <div class="flex items-center justify-between gap-3">
           <button 
             @click="isFilterModalOpen = true" 
             class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-2.5 px-5 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg flex items-center gap-2"
@@ -284,14 +284,11 @@ onMounted(() => {
             @click="clearAllFilters" 
             class="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-2 rounded-lg hover:bg-red-50 transition-all duration-200"
           >
-            <i class="fas fa-times-circle mr-1"></i> Clear All Filters
+            <i class="fas fa-times-circle mr-1"></i> Clear Filters
           </button>
         </div>
         
         <!-- Active Filters Display - FIXED: Changed 'filter' to 'filterConfig' -->
-
-        
-        
         <div class="text-sm text-gray-500">
           Showing {{ filteredDeposits.length }} of {{ deposits.length }} records
         </div>
@@ -299,44 +296,18 @@ onMounted(() => {
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-xl">
-        <div class="text-sm text-gray-500 uppercase tracking-wider">Total Deposits</div>
-        <div class="text-2xl font-bold text-gray-900 mt-2">{{ filteredDeposits.length }}</div>
-      </div>
-      <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-xl">
-        <div class="text-sm text-gray-500 uppercase tracking-wider">Total Amount</div>
-        <div class="text-2xl font-bold text-green-600 mt-2">৳{{ totalDepositAmount.toLocaleString() }}</div>
-      </div>
-      <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-xl">
-        <div class="text-sm text-gray-500 uppercase tracking-wider">Types</div>
-        <div class="text-2xl font-bold text-purple-600 mt-2">{{ Object.keys(stats.byType).length }}</div>
-      </div>
-      <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-xl">
-        <div class="text-sm text-gray-500 uppercase tracking-wider">Methods</div>
-        <div class="text-2xl font-bold text-blue-600 mt-2">{{ Object.keys(stats.byMethod).length }}</div>
-      </div>
-    </div>
-
-    <!-- Error Message -->
-    <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-2xl">
-      <p>{{ error }}</p>
-    </div>
+    <DepositOverview :deposits />
 
     <!-- Loading State -->
-    <div v-if="isLoading" class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-12 shadow-2xl text-center">
-      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500 mx-auto"></div>
-      <p class="mt-4 text-gray-500">Loading data from Google Sheets...</p>
-    </div>
 
     <!-- Data Table -->
-    <div v-else-if="deposits.length > 0" class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
+   <!--  <div v-else-if="deposits.length > 0" class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
       <div class="overflow-x-auto">
         <table class="min-w-full table-auto bordered">
           <thead>
             <tr class="bg-gray-50">
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UID</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
@@ -387,14 +358,14 @@ onMounted(() => {
           </tbody>
         </table>
       </div>
-    </div>
+    </div> -->
 
     <!-- Empty State -->
-    <div v-else class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-12 shadow-2xl text-center">
+    <!-- <div v-else class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-12 shadow-2xl text-center">
       <i class="fas fa-table text-6xl text-gray-300 mb-4"></i>
       <p class="text-gray-500 text-lg">No data found in Google Sheets.</p>
       <p class="text-gray-400 text-sm mt-2">Please check your Google Sheet configuration.</p>
-    </div>
+    </div> -->
   </div>
 
   <!-- Unified Filter Modal -->
@@ -411,7 +382,7 @@ onMounted(() => {
       </div>
       
       <div class="max-h-96 overflow-y-auto" style="display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gaps:10">
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gaps:10">
 
         <!-- FIXED: Changed 'filter' to 'filterConfig' and 'key' to 'filterKey' -->
 

@@ -80,7 +80,7 @@ class CRUDManagerService {
       })
       return record
     })
-    console.log(records);
+    //console.log(records);
     return records
   }
 

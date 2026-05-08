@@ -11,47 +11,7 @@ if (!auth.isAuthenticated) {
 const isFilterModalOpen = ref(false)
 const isLoading = ref(true)
 const error = ref(null)
-
-// Pagination
-const currentPage = ref(1)
-const itemsPerPage = ref(10)
-const itemsPerPageOptions = [10, 25, 50, 100, 250]
-
-// Pagination computed properties
-const totalPages = computed(() => {
-  return Math.ceil(filteredDeposits.value.length / itemsPerPage.value)
-})
-
-const paginatedDeposits = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value
-  const end = start + itemsPerPage.value
-  return filteredDeposits.value.slice(start, end)
-})
-
-const showingRange = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value + 1
-  const end = Math.min(start + itemsPerPage.value - 1, filteredDeposits.value.length)
-  return { start, end }
-})
-
-// Generate page numbers for pagination display
-const pageNumbers = computed(() => {
-  const pages = []
-  const maxVisible = 5
-  let startPage = Math.max(1, currentPage.value - Math.floor(maxVisible / 2))
-  let endPage = Math.min(totalPages.value, startPage + maxVisible - 1)
-  
-  if (endPage - startPage + 1 < maxVisible) {
-    startPage = Math.max(1, endPage - maxVisible + 1)
-  }
-  
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(i)
-  }
-  
-  return pages
-})
-
+                                                                          
 const deposits = ref([])
 const editing = ref(null)
 const form = reactive({                                                                         
@@ -66,6 +26,19 @@ const form = reactive({
   date: ''
 })
 
+// Index mapping based on your API response
+const INDEX = {
+  user_id: 0,
+  session: 1,
+  amount: 2,
+  type: 3,
+  month: 4,
+  method: 5,
+  pay_to: 6,
+  send_from: 7,
+  date: 10
+}
+
 // Unified filter configuration
 const filters = reactive({
   user_id: { selected: [], options: [], search: '', active: false },
@@ -78,42 +51,54 @@ const filters = reactive({
   date: { selected: [], options: [], search: '', active: false }
 })
 
+
+// Map filter keys to their index positions
+const filterKeyToIndex = {
+  user_id: INDEX.user_id,
+  session: INDEX.session,
+  month: INDEX.month,
+  type: INDEX.type,
+  method: INDEX.method,
+  pay_to: INDEX.pay_to,
+  send_from: INDEX.send_from,
+  date: INDEX.date
+}
+
 // Computed filtered deposits
 const filteredDeposits = computed(() => {
   if (!deposits.value.length) return []
   
-  let filtered = deposits.value
-  
-  // Apply filters
-  for (const [filterKey, filterConfig] of Object.entries(filters)) {
-    if (filterConfig.active && filterConfig.selected.length > 0) {
-      filtered = filtered.filter(deposit => {
-        const depositValue = deposit[filterKey]
-        return filterConfig.selected.includes(depositValue)
-      })
+  return deposits.value.filter(deposit => {
+    // Check each active filter
+    for (const [filterKey, filterConfig] of Object.entries(filters)) {
+      // Skip if no items selected or filter not active
+      if (!filterConfig.active || filterConfig.selected.length === 0) continue
+      
+      const fieldIndex = filterKeyToIndex[filterKey]
+      const depositValue = deposit[fieldIndex]
+      
+      // If deposit value doesn't exist in selected options, filter it out
+      if (!filterConfig.selected.includes(depositValue)) {
+        return false
+      }
     }
-  }
-  
-  return filtered
+    return true
+  })
 })
 
 // Get unique options for each filter from the data
 const updateFilterOptions = () => {
   Object.keys(filters).forEach(filterKey => {
+    const fieldIndex = filterKeyToIndex[filterKey]
     const uniqueValues = [...new Set(
       deposits.value
-        .map(d => d[filterKey])
+        .map(d => d[fieldIndex])
         .filter(v => v !== null && v !== undefined && v !== '' && v !== 'undefined')
         .sort()
     )]
     filters[filterKey].options = uniqueValues
   })
 }
-
-// Reset to first page when filters change
-watch([filteredDeposits, itemsPerPage], () => {
-  currentPage.value = 1
-})
 
 const toggleSelection = (key, value) => {
   const currentSelected = filters[key].selected
@@ -123,6 +108,7 @@ const toggleSelection = (key, value) => {
   } else {
     filters[key].selected = [...currentSelected, value]
   }
+  // Update active status
   filters[key].active = filters[key].selected.length > 0
 }
 
@@ -149,30 +135,6 @@ const activeFiltersCount = computed(() => {
   return Object.values(filters).filter(f => f.active && f.selected.length > 0).length
 })
 
-// Pagination methods
-const goToPage = (page) => {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page
-  }
-}
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++
-  }
-}
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--
-  }
-}
-
-const changeItemsPerPage = (value) => {
-  itemsPerPage.value = value
-  currentPage.value = 1
-}
-
 const fetchDeposits = async () => {
   auth.isLoading = true;
   isLoading.value = true
@@ -184,6 +146,7 @@ const fetchDeposits = async () => {
     
     // Populate filter options
     updateFilterOptions()
+
   } catch (err) {
     error.value = err.message || 'Failed to fetch data from Google Sheets'
     console.error('Error fetching deposits:', err)
@@ -194,23 +157,23 @@ const fetchDeposits = async () => {
 }
 
 const editDeposit = (deposit) => {
-  editing.value = deposit.user_id
+  editing.value = deposit[INDEX.user_id]
   Object.assign(form, {
-    user_id: deposit.user_id,
-    session: deposit.session,
-    amount: deposit.amount,
-    month: deposit.month,
-    type: deposit.type,
-    method: deposit.method,
-    pay_to: deposit.pay_to || '',
-    send_from: deposit.send_from || '',
-    date: deposit.date || ''
+    user_id: deposit[INDEX.user_id],
+    session: deposit[INDEX.session],
+    amount: deposit[INDEX.amount],
+    month: deposit[INDEX.month],
+    type: deposit[INDEX.type],
+    method: deposit[INDEX.method],
+    pay_to: deposit[INDEX.pay_to] || '',
+    send_from: deposit[INDEX.send_from] || '',
+    date: deposit[INDEX.date] || ''
   })
 }
 
 const updateDeposit = async () => {
   try {
-    await $fetch(`/api/crud/Transactions?id=${editing.value}`, {
+    await $fetch(`/api/sheets/deposits/${editing.value}`, {
       method: 'PUT',
       body: form
     })
@@ -226,7 +189,7 @@ const deleteDeposit = async (userId) => {
   if (!confirm('Are you sure you want to delete this deposit?')) return
   
   try {
-    await $fetch(`/api/crud/Transactions?id=${userId}`, {
+    await $fetch(`/api/sheets/deposits/${userId}`, {
       method: 'DELETE'
     })
     await fetchDeposits()
@@ -249,7 +212,7 @@ const resetForm = () => {
 
 const totalDepositAmount = computed(() => {
   return filteredDeposits.value.reduce((sum, deposit) => {
-    const amount = parseFloat(deposit.amount)
+    const amount = parseFloat(deposit[INDEX.amount])
     return sum + (isNaN(amount) ? 0 : amount)
   }, 0)
 })
@@ -260,10 +223,10 @@ const stats = computed(() => {
   const bySession = {}
   
   deposits.value.forEach(deposit => {
-    const amount = parseFloat(deposit.amount) || 0
-    const type = deposit.type
-    const method = deposit.method
-    const session = deposit.session
+    const amount = parseFloat(deposit[INDEX.amount]) || 0
+    const type = deposit[INDEX.type]
+    const method = deposit[INDEX.method]
+    const session = deposit[INDEX.session]
     
     byType[type] = (byType[type] || 0) + amount
     byMethod[method] = (byMethod[method] || 0) + amount
@@ -275,9 +238,10 @@ const stats = computed(() => {
 
 onMounted(() => {
   fetchDeposits()
-  if(!auth.isAdmin) {
-    filters.user_id.selected = [auth.userId]
-    filters.user_id.active = true
+  if(!auth.isAdmin)
+  {
+    filters.user_id.selected = auth.userId;
+    filters.user_id.active = true;
   }
 })
 </script>
@@ -302,8 +266,8 @@ onMounted(() => {
       </div>
       
       <!-- Filter Bar -->
-      <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-gray-200">
-        <div class="flex items-center gap-3">
+      <div v-if='auth.isAdmin' class=" flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-gray-200">
+        <div class="flex items-center justify-between gap-3">
           <button 
             @click="isFilterModalOpen = true" 
             class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl py-2.5 px-5 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg flex items-center gap-2"
@@ -320,12 +284,13 @@ onMounted(() => {
             @click="clearAllFilters" 
             class="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-2 rounded-lg hover:bg-red-50 transition-all duration-200"
           >
-            <i class="fas fa-times-circle mr-1"></i> Clear All Filters
+            <i class="fas fa-times-circle mr-1"></i> Clear Filters
           </button>
         </div>
         
+        <!-- Active Filters Display - FIXED: Changed 'filter' to 'filterConfig' -->
         <div class="text-sm text-gray-500">
-          Showing {{ showingRange.start }} - {{ showingRange.end }} of {{ filteredDeposits.length }} records
+          Showing {{ filteredDeposits.length }} of {{ deposits.length }} records
         </div>
       </div>
     </div>
@@ -333,25 +298,16 @@ onMounted(() => {
     <!-- Stats Cards -->
     <DepositOverview :deposits />
 
-    <!-- Error Message -->
-    <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-2xl">
-      <p>{{ error }}</p>
-    </div>
-
     <!-- Loading State -->
-    <div v-if="isLoading" class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-12 shadow-2xl text-center">
-      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500 mx-auto"></div>
-      <p class="mt-4 text-gray-500">Loading data from Google Sheets...</p>
-    </div>
 
     <!-- Data Table -->
-    <div v-else-if="deposits.length > 0" class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
+   <!--  <div v-else-if="deposits.length > 0" class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
       <div class="overflow-x-auto">
         <table class="min-w-full table-auto bordered">
           <thead>
             <tr class="bg-gray-50">
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UID</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
@@ -364,37 +320,37 @@ onMounted(() => {
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <tr v-for="(deposit, index) in paginatedDeposits" :key="deposit.user_id + index" class="hover:bg-gray-50">
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit.user_id }}</td>
+            <tr v-for="(deposit, index) in filteredDeposits"  class="hover:bg-gray-50">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ index + 1 }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit[INDEX.user_id] }}</td>
               <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                 <span class="px-2 py-1 rounded-full text-xs font-medium"
                   :class="{
-                    'bg-green-100 text-green-800': deposit.type === 'Monthly',
-                    'bg-blue-100 text-blue-800': deposit.type === 'Yearly',
-                    'bg-purple-100 text-purple-800': deposit.type === 'Maintainanc'
+                    'bg-green-100 text-green-800': deposit[INDEX.type] === 'Monthly',
+                    'bg-blue-100 text-blue-800': deposit[INDEX.type] === 'Yearly',
+                    'bg-purple-100 text-purple-800': deposit[INDEX.type] === 'Maintainanc'
                   }"
                 >
-                  {{ deposit.type }}
+                  {{ deposit[INDEX.type] }}
                 </span>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-green-600">৳{{ parseFloat(deposit.amount).toLocaleString() }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit.session }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit.month }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit.method }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit.pay_to || '-' }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit.send_from || '-' }}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit.date || '-' }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-green-600">৳{{ parseFloat(deposit[INDEX.amount]).toLocaleString() }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit[INDEX.session] }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit[INDEX.month] }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit[INDEX.method] }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit[INDEX.pay_to] || '-' }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit[INDEX.send_from] || '-' }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ deposit[INDEX.date] || '-' }}</td>
               <td v-if="auth.isAdmin" class="px-4 py-3 whitespace-nowrap text-sm font-medium">
                 <button @click="editDeposit(deposit)" class="text-indigo-600 hover:text-indigo-900 mr-3">
                   <i class="fas fa-edit"></i> Edit
                 </button>
-                <button @click="deleteDeposit(deposit.user_id)" class="text-red-600 hover:text-red-900">
+                <button @click="deleteDeposit(deposit[INDEX.user_id])" class="text-red-600 hover:text-red-900">
                   <i class="fas fa-trash"></i> Delete
                 </button>
               </td>
             </tr>
-            <tr v-if="paginatedDeposits.length === 0">
+            <tr v-if="filteredDeposits.length === 0">
               <td :colspan="auth.isAdmin ? 11 : 10" class="text-center py-8 text-gray-500">
                 No matching records found
               </td>
@@ -402,95 +358,14 @@ onMounted(() => {
           </tbody>
         </table>
       </div>
-      
-      <!-- Pagination Controls -->
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6 pt-4 border-t border-gray-200">
-        <!-- Items per page selector -->
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-600">Show:</span>
-          <select 
-            v-model="itemsPerPage"
-            @change="changeItemsPerPage($event.target.value)"
-            class="border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-          >
-            <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
-              {{ option }}
-            </option>
-          </select>
-          <span class="text-sm text-gray-600">entries</span>
-        </div>
-        
-        <!-- Pagination buttons -->
-        <div class="flex items-center gap-2">
-          <!-- First page -->
-          <button 
-            @click="goToPage(1)"
-            :disabled="currentPage === 1"
-            class="px-3 py-1.5 rounded-lg border hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="currentPage === 1 ? 'text-gray-400' : 'text-gray-700 hover:border-purple-300'"
-          >
-            <i class="fas fa-angle-double-left"></i>
-          </button>
-          
-          <!-- Previous page -->
-          <button 
-            @click="prevPage"
-            :disabled="currentPage === 1"
-            class="px-3 py-1.5 rounded-lg border hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="currentPage === 1 ? 'text-gray-400' : 'text-gray-700 hover:border-purple-300'"
-          >
-            <i class="fas fa-angle-left"></i>
-          </button>
-          
-          <!-- Page numbers -->
-          <div class="flex gap-1">
-            <button
-              v-for="page in pageNumbers"
-              :key="page"
-              @click="goToPage(page)"
-              class="px-3 py-1.5 rounded-lg transition-all"
-              :class="currentPage === page 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' 
-                : 'border text-gray-700 hover:bg-gray-50'"
-            >
-              {{ page }}
-            </button>
-          </div>
-          
-          <!-- Next page -->
-          <button 
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-1.5 rounded-lg border hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="currentPage === totalPages ? 'text-gray-400' : 'text-gray-700 hover:border-purple-300'"
-          >
-            <i class="fas fa-angle-right"></i>
-          </button>
-          
-          <!-- Last page -->
-          <button 
-            @click="goToPage(totalPages)"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-1.5 rounded-lg border hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="currentPage === totalPages ? 'text-gray-400' : 'text-gray-700 hover:border-purple-300'"
-          >
-            <i class="fas fa-angle-double-right"></i>
-          </button>
-        </div>
-        
-        <!-- Info text -->
-        <div class="text-sm text-gray-500">
-          Page {{ currentPage }} of {{ totalPages || 1 }}
-        </div>
-      </div>
-    </div>
+    </div> -->
 
     <!-- Empty State -->
-    <div v-else class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-12 shadow-2xl text-center">
+    <!-- <div v-else class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-12 shadow-2xl text-center">
       <i class="fas fa-table text-6xl text-gray-300 mb-4"></i>
       <p class="text-gray-500 text-lg">No data found in Google Sheets.</p>
       <p class="text-gray-400 text-sm mt-2">Please check your Google Sheet configuration.</p>
-    </div>
+    </div> -->
   </div>
 
   <!-- Unified Filter Modal -->
@@ -506,7 +381,11 @@ onMounted(() => {
         </button>
       </div>
       
-      <div class="max-h-96 overflow-y-auto" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;">
+      <div class="max-h-96 overflow-y-auto" style="display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gaps:10">
+
+        <!-- FIXED: Changed 'filter' to 'filterConfig' and 'key' to 'filterKey' -->
+
         <div v-for="(filterConfig, filterKey) in filters" :key="filterKey" class="border rounded-lg p-4">
           <div class="flex items-center justify-between mb-3">
             <label class="text-lg font-semibold capitalize text-gray-800">{{ filterKey.replace('_', ' ') }}</label>
@@ -548,7 +427,7 @@ onMounted(() => {
                 {{ option }}
               </label>
               <span class="text-xs text-gray-400">
-                {{ deposits.filter(d => d[filterKey] === option).length }}
+                {{ deposits.filter(d => d[filterKeyToIndex[filterKey]] === option).length }}
               </span>
             </div>
             
@@ -560,7 +439,7 @@ onMounted(() => {
         </div>
       </div>
       
-      <div class="flex justify-end gap-3 pt-2 mt-4">
+      <div class="flex justify-end gap-3 pt-2">
         <button 
           @click="isFilterModalOpen = false" 
           class="bg-gray-500 text-white rounded-xl py-2.5 px-6 hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 font-semibold"

@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    console.log('API [sheet] index registered');
+    //console.log('API [sheet] index registered');
 
     // GET operations
     if (method === 'GET') {
@@ -73,8 +73,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 405, message: 'Method not allowed' })
 
   } catch (error: any) {
-    console.log('API [sheet] index registered Error');
-    console.error(`CRUD Error [${sheet}]:`, error)
+    //console.log('API [sheet] index registered Error');
+    //console.error(`CRUD Error [${sheet}]:`, error)
     throw createError({
       statusCode: error.statusCode || 500,
       message: error.message || `Failed to process ${sheet} request`

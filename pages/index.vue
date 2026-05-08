@@ -165,18 +165,6 @@ const paymentMethodStats = computed(() => {
   }))
 })
 
-// 4. Growth Rate (Month over Month)
-const growthRate = computed(() => {
-  const monthlyData = monthlyTrends.value
-  if (monthlyData.length < 2) return 0
-  
-  const currentMonth = monthlyData[monthlyData.length - 1]?.total || 0
-  const previousMonth = monthlyData[monthlyData.length - 2]?.total || 0
-  
-  if (previousMonth === 0) return currentMonth > 0 ? 100 : 0
-  return ((currentMonth - previousMonth) / previousMonth) * 100
-})
-
 // 5. Average Deposit Amount
 const averageDeposit = computed(() => {
   if (deposits.value.length === 0) return 0
@@ -238,7 +226,24 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
+
+  <!-- Loading State -->
+  <div v-if="auth.isLoading" class="flex justify-center items-center h-96">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mx-auto"></div>
+      <p class="mt-4 text-gray-500">লোড হচ্ছে...</p>
+    </div>
+  </div>
+  
+  <!-- Empty State -->
+  <div v-else-if="deposits.length < 1" class="bg-white rounded-2xl p-12 shadow-2xl text-center">
+    <i class="fas fa-database text-6xl text-gray-300 mb-4"></i>
+    <p class="text-gray-500 text-lg">কোনো তথ্য পাওয়া যায়নি</p>
+    <p class="text-gray-400 text-sm mt-2">দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন</p>
+  </div>
+
+
+  <div v-else class="space-y-6">
   
     <!-- Header -->
     <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
@@ -250,78 +255,7 @@ onBeforeMount(() => {
 
     <!-- Overview Section -->
     <DepositOverview v-if="auth.isAdmin" :deposits />
-
-    <!-- Deposit Type Distribution -->
-    <div class="bg-white rounded-2xl p-6 shadow-xl">
-      <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-        <i class="fas fa-chart-pie text-purple-500 mr-2"></i>
-        আমানতের ধরন
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="text-center p-4 bg-green-50 rounded-xl">
-          <div class="text-3xl font-bold text-green-600">৳{{ monthlyDeposit.toLocaleString() }}</div>
-          <p class="text-sm text-gray-600 mt-1">মাসিক</p>
-          <p class="text-xs text-gray-500">{{ ((monthlyDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
-        </div>
-        <div class="text-center p-4 bg-blue-50 rounded-xl">
-          <div class="text-3xl font-bold text-blue-600">৳{{ yearlyDeposit.toLocaleString() }}</div>
-          <p class="text-sm text-gray-600 mt-1">বার্ষিক</p>
-          <p class="text-xs text-gray-500">{{ ((yearlyDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
-        </div>
-        <div class="text-center p-4 bg-red-50 rounded-xl">
-          <div class="text-3xl font-bold text-red-600">৳{{ costDeposit.toLocaleString() }}</div>
-          <p class="text-sm text-gray-600 mt-1">খরচ</p>
-          <p class="text-xs text-gray-500">{{ ((costDeposit / totalDeposit) * 100).toFixed(1) }}% মোটের</p>
-        </div>
-      </div>
-    </div>
     
-    <!-- Key Performance Indicators (KPIs) -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-      <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-5 text-white shadow-xl">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm opacity-90">গড় আমানত</p>
-            <p class="text-2xl font-bold mt-1">৳{{ averageDeposit.toLocaleString() }}</p>
-          </div>
-          <i class="fas fa-chart-line text-3xl opacity-50"></i>
-        </div>
-      </div>
-      
-      <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-5 text-white shadow-xl">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm opacity-90">গ্রোথ রেট</p>
-            <p class="text-2xl font-bold mt-1">
-              {{ growthRate > 0 ? '+' : '' }}{{ growthRate.toFixed(1) }}%
-            </p>
-          </div>
-          <i class="fas fa-arrow-trend-up text-3xl opacity-50"></i>
-        </div>
-      </div>
-      
-      <div class="bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl p-5 text-white shadow-xl">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm opacity-90">সক্রিয় সদস্য</p>
-            <p class="text-2xl font-bold mt-1">{{ activeMembers }} জন</p>
-            <p class="text-xs opacity-75">গত ৩ মাসে</p>
-          </div>
-          <i class="fas fa-users text-3xl opacity-50"></i>
-        </div>
-      </div>
-      
-      <div class="bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl p-5 text-white shadow-xl">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm opacity-90">সংগ্রহ দক্ষতা</p>
-            <p class="text-2xl font-bold mt-1">{{ collectionEfficiency.toFixed(1) }}%</p>
-          </div>
-          <i class="fas fa-bullseye text-3xl opacity-50"></i>
-        </div>
-      </div>
-    </div>
-
     <!-- Top Contributors & Payment Methods -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Top Contributors -->
@@ -380,31 +314,7 @@ onBeforeMount(() => {
       </div>
     </div>
 
-    <div class="bg-white rounded-2xl p-6 shadow-xl">
-      <h3 class="text-lg font-bold text-gray-800 mb-3">মূল্যবান পরামর্শ</h3>
-      <div class="space-y-3">
-        <div class="flex items-start space-x-2 p-2 bg-yellow-50 rounded-lg">
-          <i class="fas fa-lightbulb text-yellow-500 mt-0.5"></i>
-          <p class="text-sm text-gray-700">
-            গত মাসের তুলনায় গ্রোথ {{ growthRate > 0 ? 'বেড়েছে' : 'কমেছে' }} 
-            {{ Math.abs(growthRate).toFixed(1) }}%
-          </p>
-        </div>
-        <div v-if="activeMembers < totalUser" class="flex items-start space-x-2 p-2 bg-red-50 rounded-lg">
-          <i class="fas fa-exclamation-triangle text-red-500 mt-0.5"></i>
-          <p class="text-sm text-gray-700">
-            {{ totalUser - activeMembers }} জন সদস্য গত ৩ মাসে সক্রিয় নন
-          </p>
-        </div>
-        <div class="flex items-start space-x-2 p-2 bg-green-50 rounded-lg">
-          <i class="fas fa-chart-line text-green-500 mt-0.5"></i>
-          <p class="text-sm text-gray-700">
-            দৈনিক গড় সংগ্রহ: ৳{{ dailyAverage.toLocaleString() }}
-          </p>
-        </div>
-      </div>
-    </div>
-
+  
     <!-- Admin Section -->
     <div v-if="auth.isAdmin">
       <!-- Recent Members -->
@@ -472,18 +382,5 @@ onBeforeMount(() => {
     </div>
   </div>
 
-  <!-- Loading State -->
- <!--  <div v-else-if="auth.isLoading" class="flex justify-center items-center h-96">
-    <div class="text-center">
-      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mx-auto"></div>
-      <p class="mt-4 text-gray-500">লোড হচ্ছে...</p>
-    </div>
-  </div> -->
-
-  <!-- Empty State -->
-  <div v-if="deposits.length < 1" class="bg-white rounded-2xl p-12 shadow-2xl text-center">
-    <i class="fas fa-database text-6xl text-gray-300 mb-4"></i>
-    <p class="text-gray-500 text-lg">কোনো তথ্য পাওয়া যায়নি</p>
-    <p class="text-gray-400 text-sm mt-2">দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন</p>
-  </div>
+  
 </template>
