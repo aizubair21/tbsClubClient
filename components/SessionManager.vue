@@ -157,8 +157,9 @@ onMounted(() => {
         :key="session.id"
         class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all"
       >
-        <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
+        <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-4 flex items-center justify-between">
           <h3 class="text-xl font-bold text-white">{{ session.sessionName }}</h3>
+          <NuxtLink :to="`/session/${session.sessionName}`"> Details </NuxtLink>
         </div>
         
         <div class="p-4 space-y-3">
