@@ -64,7 +64,7 @@ const currentSessionDeposit = computed(() => {
 	
  <!-- Deposits Overview Section -->
 <div>
-  <h2 class="text-xl font-bold text-white mb-4 pb-2 border-b border-gray-300"> এক নজরে দেখা </h2>
+  <h2 class="text-sm font-bold mb-4 pb-2"> অভারভিউ </h2>
   
   <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
     <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">

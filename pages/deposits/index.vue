@@ -49,7 +49,7 @@ onMounted(() => {
 
 		<NuxtLink 
 			to="/deposits/add" 
-			class="group bg-gradient-to-br from-white-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+			class="group bg-gradient-to-br from-purple-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
 		>
 			<div class="flex items-center justify-between mb-3">
 				<i class="fas fa-plus text-3xl opacity-90"></i>
